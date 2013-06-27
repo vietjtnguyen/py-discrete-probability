@@ -84,9 +84,9 @@ class JointTable():
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= total_count
 	def marginalize(variables):
-		pass
+		raise NotImplementedError
 	def condition(context_variables):
-		pass
+		raise NotImplementedError
 	def __call__(self, *args):
 		args = list(args)
 		query_vars = []

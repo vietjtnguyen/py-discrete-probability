@@ -26,6 +26,10 @@ class Variable():
 
 BaseAssignment = collections.namedtuple('BaseAssignment', ['variable', 'value'])
 class SingleAssignment(BaseAssignment):
+	def __init__(self, variable, value):
+		super(SingleAssignment, self).__init__(variable, value)
+		if not value in variable.values:
+			raise ValueError('Assigned incompatible value to variable.')
 	def __str__(self):
 		return '{!s}={!s}'.format(self.variable, self.value)
 	def __repr__(self):
@@ -164,7 +168,7 @@ data = [
 	[False, False, True, 1],
 	[True, False, False, 1],
 	[True, False, True, 3],
-	[False, False, False, 0],
+	[False, False, False, 4],
 	[True, False, True, 1],
 	[True, False, True, 2],
 	[False, False, True, 1],

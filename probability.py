@@ -3,7 +3,7 @@ import math
 import numpy as np
 
 class Variable():
-	def __init__(self, name, description='', values=(True, False)):
+	def __init__(self, name, values=(True, False), description=''):
 		self.name = name
 		self.description = name if description == '' else description
 		self.values = values
@@ -135,7 +135,8 @@ class Network():
 		return joint_table
 
 S, H, E = map(Variable, ['S', 'H', 'E'])
-network = Network([S, H, E], [S < H, H > E])
+T = Variable('T', [1, 2, 3])
+network = Network([S, H, E, T], [S < H, H > E, E > T])
 print(network.variables)
 print(network.edges)
 P = network.as_joint_table()

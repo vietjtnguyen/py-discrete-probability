@@ -96,7 +96,9 @@ class JointTable():
 		print('{:} given {:}'.format(str(query_vars), str(given_vars)))
 
 class ConditionalTable():
-	pass
+	def __init__(self, variables, context_variables):
+		self.variables = variables
+		self.context_variables = context_variables
 
 class DirectedEdge():
 	def __init__(self, from_var, to_var, right=True):

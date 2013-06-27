@@ -38,6 +38,8 @@ class Assignment(frozenset):
 		return str(self)
 	def get_variables(self):
 		return frozenset([x.variable for x in self])
+	def complete(self, variables):
+		return Assignment.generate(list(set(variables).difference(self.get_variables())), list(self))
 	@staticmethod
 	def generate(variables, trace=[]):
 		if len(variables) == 0:
@@ -48,9 +50,6 @@ class Assignment(frozenset):
 			for value in variable.values:
 				traces.extend(Assignment.generate(rest, trace+[SingleAssignment(variable, value)]))
 			return traces
-	@staticmethod
-	def complete(variables, partial_assignment):
-		return Assignment.generate(list(set(variables).difference(partial_assignment.get_variables())), list(partial_assignment))
 
 class JointTable():
 	def __init__(self, variables):
@@ -159,5 +158,4 @@ P.learn_from_complete_data([H, S, E], data)
 print(P.assignments)
 print(P.validate())
 print([P.probabilities[assignment] for assignment in P.assignments])
-print(Assignment.complete(network.variables, Assignment([S<<True])))
-print(Assignment.complete(network.variables, Assignment([S<<True, H<<False])))
+print(Assignment([S<<True]).complete(network.variables))

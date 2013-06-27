@@ -130,7 +130,7 @@ class Network():
 			for edge in self.edges:
 				if edge.to_var == variable:
 					parents.append(edge.from_var)
-			self.families[variable] = parents
+			self.families[variable] = set(parents)
 			if len(parents) == 0:
 				self.root_variables.add(variable)
 		self.parental_variables = set()
@@ -139,7 +139,7 @@ class Network():
 		self.leaf_variables = set(self.variables).difference(self.parental_variables)
 		self.parameterization = {}
 		for variable in self.variables:
-			self.parameterization[variable] = ConditionalTable([variable], 
+			self.parameterization[variable] = ConditionalTable([variable], self.families[variable]
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)
 		return joint_table

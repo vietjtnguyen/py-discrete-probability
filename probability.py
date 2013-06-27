@@ -100,6 +100,9 @@ class ConditionalTable():
 		self.variables = variables
 		self.context_variables = context_variables
 		self.context_assignments = Assignment.generate(list(self.context_variables))
+		self.context_tables = {}
+		for assignment in self.context_assignments:
+			self.context_tables[assignment] = JointTable(self.variables)
 
 class DirectedEdge():
 	def __init__(self, from_var, to_var, right=True):

@@ -99,6 +99,7 @@ class ConditionalTable():
 	def __init__(self, variables, context_variables):
 		self.variables = variables
 		self.context_variables = context_variables
+		self.context_assignments = Assignment.generate(list(self.context_variables))
 
 class DirectedEdge():
 	def __init__(self, from_var, to_var, right=True):

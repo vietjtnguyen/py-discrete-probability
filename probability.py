@@ -82,6 +82,7 @@ class JointTable():
 		if sum(self.probabilities.values()) != 1.0:
 			return False
 		return True
+	is_valid = property(validate)
 	def __call__(self, *args):
 		args = list(args)
 		query_vars = []
@@ -103,6 +104,12 @@ class ConditionalTable():
 		self.context_tables = {}
 		for assignment in self.context_assignments:
 			self.context_tables[assignment] = JointTable(self.variables)
+	def validate(self):
+		for assignment in self.context_assignments:
+			if not self.context_tables[assignment].is_valid:
+				return False
+		return True
+	is_valid = property(validate)
 
 class DirectedEdge():
 	def __init__(self, from_var, to_var, right=True):
@@ -139,7 +146,8 @@ class Network():
 		self.leaf_variables = set(self.variables).difference(self.parental_variables)
 		self.parameterization = {}
 		for variable in self.variables:
-			self.parameterization[variable] = ConditionalTable([variable], self.families[variable]
+			self.parameterization[variable] = ConditionalTable([variable], self.families[variable])
+	def 
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)
 		return joint_table

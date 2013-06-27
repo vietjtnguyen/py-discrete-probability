@@ -139,7 +139,7 @@ class Network():
 		return joint_table
 
 S, H, E = map(Variable, ['S', 'H', 'E'])
-T = Variable('T', [1, 2, 3, 4, 5])
+T = Variable('T', [1, 2, 3])
 network = Network([S, H, E, T], [S < H, H > E, E > T])
 print(network.variables)
 print(network.edges)
@@ -168,7 +168,7 @@ data = [
 	[False, False, True, 1],
 	[True, False, False, 1],
 	[True, False, True, 3],
-	[False, False, False, 4],
+	[False, False, False, 1],
 	[True, False, True, 1],
 	[True, False, True, 2],
 	[False, False, True, 1],
@@ -180,6 +180,7 @@ data = [
 	[True, False, True, 2]]
 P.learn_from_complete_data([H, S, E, T], data)
 print(P.assignments)
+print(len(P.assignments))
 print(P.validate())
 print([P.probabilities[assignment] for assignment in P.assignments])
 print(Assignment([S<<True]).complete(network.variables))

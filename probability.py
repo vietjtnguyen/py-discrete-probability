@@ -158,8 +158,7 @@ class Network():
 		return joint_table
 
 S, H, E = map(Variable, ['S', 'H', 'E'])
-T = Variable('T', [1, 2, 3])
-network = Network([S, H, E, T], [S < H, H > E, E > T])
+network = Network([S, H, E], [S < H, H > E])
 print(network.variables)
 print(network.edges)
 P = network.as_joint_table()

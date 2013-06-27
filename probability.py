@@ -48,9 +48,8 @@ class Assignment(frozenset):
 				traces.extend(Assignment.generate(rest, trace+[SingleAssignment(variable, value)]))
 			return traces
 	@staticmethod
-	def complete(variables, partial):
-		pass
-		#return Assignment.generate(list(set(variables).difference(set(
+	def complete(variables, partial_assignment):
+		return Assignment.generate(list(set(variables).difference(partial_assignment.get_variables())), list(partial_assignment))
 
 class JointTable():
 	def __init__(self, variables):

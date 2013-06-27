@@ -22,9 +22,6 @@ class Variable():
 	def __or__(self, other):
 		return (self, other)
 	def __lshift__(self, other):
-		print('hello')
-		print(self)
-		print(other)
 		return SingleAssignment(self, other)
 
 # TODO: This should probably be a derivative of a tuple. (Viet Nguyen, 2013-06-23)

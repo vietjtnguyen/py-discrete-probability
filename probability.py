@@ -29,7 +29,7 @@ class SingleAssignment(BaseAssignment):
 	def __init__(self, variable, value):
 		super(SingleAssignment, self).__init__(variable, value)
 		if not value in variable.values:
-			raise ValueError('Assigned incompatible value to variable.')
+			raise ValueError('Assigned incompatible value ({1}) to variable ({0}). {1} not in {2} for variable {0}.'.format(variable, value, str(variable.values)))
 	def __str__(self):
 		return '{!s}={!s}'.format(self.variable, self.value)
 	def __repr__(self):

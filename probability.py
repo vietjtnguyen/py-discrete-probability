@@ -64,6 +64,14 @@ class JointTable():
 		self.probabilities = {}
 		for assignment in self.assignments:
 			self.probabilities[assignment] = None
+	def validate(self):
+		if None in self.probabilities.values():
+			return False
+		# TODO: This is probably too stringent.
+		if sum(self.probabilities.values()) != 1.0:
+			return False
+		return True
+	is_valid = property(validate)
 	def set_row(self, assignment, value):
 		self.probabilities[assignment] = value
 	def learn_from_complete_data(self, header, data):
@@ -75,14 +83,6 @@ class JointTable():
 			self.probabilities[assignment] += 1.0
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= total_count
-	def validate(self):
-		if None in self.probabilities.values():
-			return False
-		# TODO: This is probably too stringent.
-		if sum(self.probabilities.values()) != 1.0:
-			return False
-		return True
-	is_valid = property(validate)
 	def __call__(self, *args):
 		args = list(args)
 		query_vars = []
@@ -110,6 +110,8 @@ class ConditionalTable():
 				return False
 		return True
 	is_valid = property(validate)
+	def set_row(self, assignment, context, value):
+		self.context_tables[context].set_row(assignment, value)
 
 class DirectedEdge():
 	def __init__(self, from_var, to_var, right=True):

@@ -147,7 +147,12 @@ class Network():
 		self.parameterization = {}
 		for variable in self.variables:
 			self.parameterization[variable] = ConditionalTable([variable], self.families[variable])
-	def 
+	def validate(self):
+		for variable in self.variables:
+			if not self.parameterization[variable].is_valid:
+				return False
+		return True
+	is_valid = property(validate)
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)
 		return joint_table
@@ -175,34 +180,14 @@ data = [
 	[True, True, True],
 	[True, False, True],
 	[True, False, True]]
-data = [
-	[True, False, True, 3],
-	[True, False, True, 2],
-	[False, True, False, 2],
-	[False, False, True, 1],
-	[True, False, False, 1],
-	[True, False, True, 3],
-	[False, False, False, 1],
-	[True, False, True, 1],
-	[True, False, True, 2],
-	[False, False, True, 1],
-	[True, False, True, 2],
-	[True, True, True, 3],
-	[True, False, True, 3],
-	[True, True, True, 1],
-	[True, False, True, 3],
-	[True, False, True, 2]]
-P.learn_from_complete_data([H, S, E, T], data)
+P.learn_from_complete_data([H, S, E], data)
 print(P.assignments)
 print(len(P.assignments))
 print(P.validate())
 print([P.probabilities[assignment] for assignment in P.assignments])
 print(Assignment([S<<True]).complete(network.variables))
-header=[H,S,E,T]
+header=[H,S,E]
 print(sum([Assignment([S<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
 print(sum([Assignment([S<<True, H<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
 print(sum([Assignment([H<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
-print(sum([Assignment([T<<1]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
-print(sum([Assignment([T<<2]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
-print(sum([Assignment([T<<3]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
 

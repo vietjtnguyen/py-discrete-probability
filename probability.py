@@ -157,7 +157,24 @@ data = [
 	[True, True, True],
 	[True, False, True],
 	[True, False, True]]
-P.learn_from_complete_data([H, S, E], data)
+data = [
+	[True, False, True, 3],
+	[True, False, True, 2],
+	[False, True, False, 2],
+	[False, False, True, 1],
+	[True, False, False, 1],
+	[True, False, True, 3],
+	[False, False, False, 0],
+	[True, False, True, 1],
+	[True, False, True, 2],
+	[False, False, True, 1],
+	[True, False, True, 2],
+	[True, True, True, 3],
+	[True, False, True, 3],
+	[True, True, True, 1],
+	[True, False, True, 3],
+	[True, False, True, 2]]
+P.learn_from_complete_data([H, S, E, T], data)
 print(P.assignments)
 print(P.validate())
 print([P.probabilities[assignment] for assignment in P.assignments])

@@ -36,6 +36,8 @@ class Assignment(frozenset):
 		return '({:})'.format(', '.join([str(x) for x in self]))
 	def __repr__(self):
 		return str(self)
+	def consistent_with(self, other):
+		return len(self.union(other)) == len(self.union(other).get_variables())
 	def get_variables(self):
 		return frozenset([x.variable for x in self])
 	def complete(self, variables):
@@ -159,3 +161,8 @@ print(P.assignments)
 print(P.validate())
 print([P.probabilities[assignment] for assignment in P.assignments])
 print(Assignment([S<<True]).complete(network.variables))
+header=[H,S,E]
+print(sum([Assignment([S<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
+print(sum([Assignment([S<<True, H<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
+print(sum([Assignment([H<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
+

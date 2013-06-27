@@ -97,8 +97,8 @@ class JointTable():
 
 class ConditionalTable():
 	def __init__(self, variables, context_variables):
-		self.variables = variables
-		self.context_variables = context_variables
+		self.variables = set(variables)
+		self.context_variables = set(context_variables)
 		self.context_assignments = Assignment.generate(list(self.context_variables))
 		self.context_tables = {}
 		for assignment in self.context_assignments:
@@ -139,7 +139,7 @@ class Network():
 		self.leaf_variables = set(self.variables).difference(self.parental_variables)
 		self.parameterization = {}
 		for variable in self.variables:
-			self.parameterization[variable] = None
+			self.parameterization[variable] = ConditionalTable([variable], 
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)
 		return joint_table

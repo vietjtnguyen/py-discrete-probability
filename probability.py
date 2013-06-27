@@ -85,7 +85,7 @@ class JointTable():
 			self.probabilities[assignment] /= total_count
 	def marginalize(variables):
 		pass
-	def conditional(context_variables):
+	def condition(context_variables):
 		pass
 	def __call__(self, *args):
 		args = list(args)

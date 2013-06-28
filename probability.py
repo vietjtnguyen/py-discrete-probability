@@ -163,7 +163,7 @@ class JointTable():
 			raise KeyError('Other distribution does not share variables. {:} is not a subset of {:}'.format(self.variables, other.variables))
 		if not self.variables == other.variables:
 			other = other.marginalize_over(self.variables)
-		return sum([self.probabilities[assignment] * inf_thr_log(self.probabilities[assignment] / other.probabilities[assignment], 2) for assignment in self.assignments])
+		return sum([self.probabilities[assignment] * inf_thr_log(self.probabilities[assignment] / other.probabilities[assignment]) for assignment in self.assignments])
 	def __call__(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')

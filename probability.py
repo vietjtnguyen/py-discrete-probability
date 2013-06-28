@@ -265,4 +265,6 @@ print('')
 P_H = ConditionalTable([S], [H])
 print(P_H)
 print(P_H.is_valid)
+print('')
+print(P.condition([H,E]))
 

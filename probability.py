@@ -92,6 +92,8 @@ class JointTable():
 				out_string += str(assignment.get_variable(variable).value).ljust(column_widths[i]) + ' | '
 			out_string += '{:}\n'.format(self.probabilities[assignment])
 		return out_string[:-1]
+	def __repr__(self):
+		return str(self)
 	def validate(self, epsilon=sys.float_info.epsilon):
 		if None in self.probabilities.values():
 			return False
@@ -218,6 +220,8 @@ class ConditionalTable():
 				out_string += ' | '
 				out_string += '{:}\n'.format(context_table.probabilities[assignment])
 		return out_string[:-1]
+	def __repr__(self):
+		return str(self)
 	def validate(self):
 		for assignment in self.context_assignments:
 			if not self.context_tables[assignment].is_valid:

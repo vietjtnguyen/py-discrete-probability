@@ -112,8 +112,8 @@ class JointTable():
 		for assignment in self.assignments:
 			self.probabilities[assignment] = 0
 		for sample in data:
-			assignment = Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])
-			self.probabilities[assignment] += 1
+			sample_assignment = Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])
+			self.probabilities[sample_assignment] += 1
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= float(total_count)
 	def marginalize_over(self, variables):
@@ -276,10 +276,10 @@ class BayesianNetwork():
 					context_table.probabilities[assignment] = 0.0
 		accumulators = {}
 		for accum_assignment in accum_assignments:
-			accumulators[accum_assignment] = 0.0
+			accumulators[accum_assignment] = 0
 		for sample in data:
-			for
-			assignment = Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])
+			for accum_assignment in accum_assignments:
+				sample_assignment = Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])
 			self.probabilities[assignment] += 1.0
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= total_count

@@ -88,6 +88,7 @@ class JointTable():
 		if None in self.probabilities.values():
 			return False
 		# TODO: This is probably too stringent.
+		print(sum(self.probabilities.values()))
 		if sum(self.probabilities.values()) != 1.0:
 			return False
 		return True
@@ -295,6 +296,7 @@ print('')
 P = JointTable([S, H, E])
 P.randomize()
 print(P)
+print(P.is_valid)
 h, h_ = H.get_assignments()
 s, s_ = S.get_assignments()
 e, e_ = E.get_assignments()

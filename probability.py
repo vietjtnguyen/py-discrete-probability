@@ -110,12 +110,12 @@ class JointTable():
 	def learn_from_complete_data(self, header, data):
 		total_count = float(len(data))
 		for assignment in self.assignments:
-			self.probabilities[assignment] = 0.0
+			self.probabilities[assignment] = 0
 		for sample in data:
 			assignment = Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])
-			self.probabilities[assignment] += 1.0
+			self.probabilities[assignment] += 1
 		for assignment in self.assignments:
-			self.probabilities[assignment] /= total_count
+			self.probabilities[assignment] /= float(total_count)
 	def marginalize_over(self, variables):
 		return self.marginalize_out(self.variables.difference(set(variables)))
 	def marginalize_out(self, variables):
@@ -274,9 +274,11 @@ class BayesianNetwork():
 			for context_table in conditional.context_tables.values():
 				for assignment in conditional.assignments:
 					context_table.probabilities[assignment] = 0.0
-		for assignment in self.assignments:
-			self.probabilities[assignment] = 0.0
+		accumulators = {}
+		for accum_assignment in accum_assignments:
+			accumulators[accum_assignment] = 0.0
 		for sample in data:
+			for
 			assignment = Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])
 			self.probabilities[assignment] += 1.0
 		for assignment in self.assignments:

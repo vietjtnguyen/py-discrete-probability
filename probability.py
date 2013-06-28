@@ -364,6 +364,7 @@ class BayesianNetwork():
 	def display(self, width=640, height=480):
 		import IPython.display
 		div_id = 'prob-graph-display-'+str(random.randint(0, 65536))
+		IPytohn.display.display(IPython.display.HTML(data='<div id="{:}"></div>'.format(div_id)
 		IPython.display.display(IPython.display.Javascript(data=self.get_display_js(width, height), lib='http://d3js.org/d3.v3.min.js', css='graph_display.css'))
 
 S, H, E = variables = map(Variable, ['S', 'H', 'E'])

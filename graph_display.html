@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html>
-<body>
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <style type="text/css">
 path.link {
@@ -9,7 +6,7 @@ path.link {
   stroke-width: 1.5px;
 }
 
-circle.node {
+circle {
   fill: #ccc;
   stroke: #333;
   stroke-width: 1.5px;
@@ -28,12 +25,6 @@ text.shadow {
 
 </style>
 <script type="text/javascript">
-
-var links = [
-  {source: "H", target: "S"},
-  {source: "H", target: "E"},
-];
-
 var nodes = {};
 
 // Compute the distinct nodes from the links.
@@ -78,7 +69,7 @@ var path = svg.append("svg:g").selectAll("path")
     .attr("class", function(d) { return "link"; })
     .attr("marker-end", function(d) { return "url(#arrow)"; });
 
-var circle = svg.append("svg:g").selectAll("circle.node")
+var circle = svg.append("svg:g").selectAll("circle")
     .data(force.nodes())
   .enter().append("svg:circle")
     .attr("r", 8)
@@ -118,5 +109,3 @@ function tick() {
   });
 }
 </script>
-</body>
-</html>

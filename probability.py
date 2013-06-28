@@ -94,7 +94,7 @@ class JointTable():
 			self.probabilities[assignment] += 1.0
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= total_count
-	def marginalize_out(variables):
+	def marginalize_out(self, variables):
 		others = frozenset(variables).difference(self.variables)
 		marginal = JointTable(others)
 		for marginal_assignment in marginal.assignments:
@@ -210,6 +210,7 @@ print(len(P.assignments))
 print(P.validate())
 print([P.probabilities[assignment] for assignment in P.assignments])
 print(P)
+print(P.marginalize_out([S]))
 print(Assignment([S<<True]).complete(network.variables))
 header=[H,S,E]
 print(sum([Assignment([S<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))

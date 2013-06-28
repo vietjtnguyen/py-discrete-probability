@@ -434,7 +434,7 @@ for variable in network.variables:
 	print(network.conditionals[variable])
 P_b = network.as_joint_table()
 P = JointTable(variables).randomize()
-P_b = JointTable(variables).randomize()
+P_b = JointTable(variables).copy(P).set_row(Assignment([h, s, e]), 0.5).normalize()
 print(P_b)
 print(P)
 print(kl_divergence(P, P_b, [H]))

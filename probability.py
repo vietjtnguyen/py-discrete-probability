@@ -65,6 +65,11 @@ class JointTable():
 		self.probabilities = {}
 		for assignment in self.assignments:
 			self.probabilities[assignment] = None
+	def __str__(self):
+		column_widths = [max(len(str(variable), max(*[len(str(value)) for value in variable.values])) for variable in self.variables]
+		out_string = ' | '.join(str(variable).ljust(column_widths) for variable in self.variables) + ' | P(.)\n'
+		for assignment in self.assignments:
+			out_string += ' | '
 	def validate(self):
 		if None in self.probabilities.values():
 			return False

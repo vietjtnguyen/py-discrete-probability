@@ -97,6 +97,8 @@ class JointTable():
 			self.probabilities[assignment] += 1.0
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= total_count
+	def marginalize_over(self, variables):
+		return self.marginalize_out(self.variables.difference(set(variables)))
 	def marginalize_out(self, variables):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like marginalization until joint table is valid.')
@@ -108,9 +110,11 @@ class JointTable():
 			for marginalized_assignment in marginalized_assignments:
 				marginal.probabilities[marginal_assignment] += self.probabilities[marginal_assignment.union(marginalized_assignment)]
 		return marginal
-	def condition(self, context_variables):
+	def condition(self, variables, context_variables):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like marginalization until joint table is valid.')
+
+		conditional = ConditionalTable(variablesself.variables.difference(set(variables)))
 	def __call__(self, *args):
 		args = list(args)
 		query_vars = []

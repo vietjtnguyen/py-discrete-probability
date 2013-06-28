@@ -43,6 +43,8 @@ class Assignment(frozenset):
 		return str(self)
 	def consistent_with(self, other):
 		return len(self.union(other)) == len(self.union(other).get_variables())
+	def get_variable(self, variable):
+		return filter(lambda x: x.variable == variable, self)[0]
 	def get_variables(self):
 		return frozenset([x.variable for x in self])
 	def complete(self, variables):
@@ -67,9 +69,9 @@ class JointTable():
 			self.probabilities[assignment] = None
 	def __str__(self):
 		column_widths = [max(len(str(variable), max(*[len(str(value)) for value in variable.values])) for variable in self.variables]
-		out_string = ' | '.join(str(variable).ljust(column_widths) for variable in self.variables) + ' | P(.)\n'
+		out_string = ' | '.join([str(variable).ljust(column_widths) for variable in self.variables]) + ' | P(.)\n'
 		for assignment in self.assignments:
-			out_string += ' | '
+			out_string += ' | '.join(str(value).ljust(column_widths) for 
 	def validate(self):
 		if None in self.probabilities.values():
 			return False

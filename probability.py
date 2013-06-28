@@ -3,16 +3,7 @@ import math
 import random
 import sys
 
-def entropy(distribution, Xs):
-	ent = 0.0
-	xs = Assignment.generate(Xs)
-	for x in xs:
-		probability = distribution(*assignment)
-		if probability > 0.0:
-			ent -= probability * math.log(probability, 2)
-	return ent
-
-def conditional_entropy(distribution, Xs, Ys):
+def entropy(distribution, variables):
 	ent = 0.0
 	assignments = Assignment.generate(variables)
 	for assignment in assignments:
@@ -21,13 +12,23 @@ def conditional_entropy(distribution, Xs, Ys):
 			ent -= probability * math.log(probability, 2)
 	return ent
 
-def mutual_information(distribution, X, Y):
-	mi = 0.0
+def conditional_entropy(distribution, X, Y):
+	ent = 0.0
 	for x in X.assignments:
 		for y in Y.assignments:
 			proba_x = distribution(x)
 			proba_y = distribution(y)
 			proba_xy = distribution(x, y)
+			if proba_x > 0.0 and proba_y > 0.0 and proba_xy > 0.0:
+				ent -= proba_xy * math.log(proba_xy / (proba_x * proba_y), 2)
+	return ent
+
+def mutual_information(distribution, X, Y):
+	mi = 0.0
+	for x in X.assignments:
+		for y in Y.assignments:
+			proba_xy = distribution(x, y)
+			proba_x_y = distribution(x | y)
 			if proba_x > 0.0 and proba_y > 0.0 and proba_xy > 0.0:
 				mi = proba_xy * math.log(proba_xy / (proba_x * proba_y), 2)
 	return mi

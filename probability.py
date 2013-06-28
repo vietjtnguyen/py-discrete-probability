@@ -68,10 +68,13 @@ class JointTable():
 		for assignment in self.assignments:
 			self.probabilities[assignment] = None
 	def __str__(self):
-		column_widths = [max(len(str(variable), max(*[len(str(value)) for value in variable.values])) for variable in self.variables]
-		out_string = ' | '.join([str(variable).ljust(column_widths) for variable in self.variables]) + ' | P(.)\n'
+		column_widths = [max(len(str(variable)), max(*[len(str(value)) for value in variable.values])) for variable in self.variables]
+		out_string = ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]) + ' | P(.)\n'
 		for assignment in self.assignments:
-			out_string += ' | '.join(str(value).ljust(column_widths) for 
+			for i, variable in enumerate(self.variables):
+				out_string += str(assignment.get_variable(variable).value).ljust(column_widths[i] + ' | '
+			out_string += '{:}\n'.format(self.probabilities[assignment])
+		return out_string
 	def validate(self):
 		if None in self.probabilities.values():
 			return False
@@ -205,6 +208,7 @@ print(P.assignments)
 print(len(P.assignments))
 print(P.validate())
 print([P.probabilities[assignment] for assignment in P.assignments])
+print(P)
 print(Assignment([S<<True]).complete(network.variables))
 header=[H,S,E]
 print(sum([Assignment([S<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))

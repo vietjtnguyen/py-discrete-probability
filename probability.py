@@ -218,6 +218,15 @@ class ConditionalTable():
 				return False
 		return True
 	is_valid = property(validate)
+	def learn_from_complete_data(self, header, data):
+		total_count = float(len(data))
+		for assignment in self.assignments:
+			self.probabilities[assignment] = 0.0
+		for sample in data:
+			assignment = Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])
+			self.probabilities[assignment] += 1.0
+		for assignment in self.assignments:
+			self.probabilities[assignment] /= total_count
 	def set_row(self, assignment, context, value):
 		self.context_tables[context].set_row(assignment, value)
 
@@ -231,7 +240,7 @@ class DirectedEdge():
 	def __repr__(self):
 		return str(self)
 
-class Network():
+class BayesianNetwork():
 	def __init__(self, variables, edges):
 		self.variables = set(variables)
 		self.edges = edges
@@ -268,7 +277,7 @@ class Network():
 		return joint_table
 
 S, H, E = map(Variable, ['S', 'H', 'E'])
-network = Network([S, H, E], [S < H, H > E])
+network = BayesianNetwork([S, H, E], [S < H, H > E])
 print(network.variables)
 print(network.edges)
 P = network.as_joint_table()

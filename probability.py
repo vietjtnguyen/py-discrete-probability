@@ -268,7 +268,8 @@ class BayesianNetwork():
 	def learn_from_complete_data(self, header, data):
 		total_count = float(len(data))
 		accum_assignments = []
-		for conditional in self.conditionals:
+		for variable in self.variables:
+			conditional = self.conditionals[variable]
 			accum_assignments.extend(conditional.all_assignments)
 			accum_assignments.extend(conditional.context_assignments)
 			for context_assignment in conditional.context_assignments:
@@ -283,7 +284,8 @@ class BayesianNetwork():
 			for accum_assignment in accum_assignments:
 				if accum_assignment.consistent_with(sample_assignment):
 					accumulators[accum_assignment] += 1
-		for conditional in self.conditionals:
+		for variable in self.variables:
+			conditional = self.conditionals[variable]
 			for context_assignment in conditional.context_assignments:
 				context_table = conditional.context_tables[context_assignment]
 				for assignment in conditional.assignments:
@@ -361,5 +363,5 @@ network.learn_from_complete_data(header, data)
 print('')
 print(network.variables)
 print(network.edges)
-for conditional in network.conditional:
+for conditional in network.conditionals:
 	print(conditional)

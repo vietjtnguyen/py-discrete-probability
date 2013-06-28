@@ -90,8 +90,9 @@ class JointTable():
 		for marginal_assignment in marginal.assignments:
 			marginal.probabilities[marginal_assignment] = 0.0
 		for marginal_assignment in marginal.assignments:
-			for 
-			marginal.probabilities[assignment] += 
+			for variable in variables:
+				for assignment in variable.assignments:
+					marginal.probabilities[marginal_assignment] += self.probabilities[margina_assignment.union(assignment)]
 	def condition(context_variables):
 		raise NotImplementedError
 	def __call__(self, *args):

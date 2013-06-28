@@ -119,7 +119,11 @@ class JointTable():
 		conditional = ConditionalTable(variables, context_variables)
 		context_marginal = self.marginalize_over(context_variables)
 		for context_assignment in conditional.context_assignments:
-
+			normalizer = context_marginal.probabilities[context_assignment]
+			context_table = conditional.context_tables[context_assignment]
+			for assignment in assignments:
+				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
+		return conditional
 	def __call__(self, *args):
 		args = list(args)
 		query_vars = []

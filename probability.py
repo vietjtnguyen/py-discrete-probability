@@ -3,7 +3,6 @@ import math
 import random
 import sys
 
-GivenSeparator = collections.namedtuple('GivenSeparator', ['left', 'right'])
 class Variable():
 	def __init__(self, name, values=(True, False), description=''):
 		self.name = name

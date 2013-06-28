@@ -39,7 +39,12 @@ def kl_divergence(distr_l, distr_r, variables):
 	for assignment in assignments:
 		proba_l = distr_l(*assignment)
 		proba_r = distr_r(*assignment)
+		print(assignment)
 		if proba_l > 0.0 and proba_r > 0.0:
+			print(proba_l)
+			print(proba_r)
+			print(proba_l/proba_r)
+			print(math.log(proba_l/proba_r,2))
 			kl += proba_l * math.log(proba_l / proba_r, 2)
 	return kl
 

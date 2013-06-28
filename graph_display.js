@@ -1,14 +1,10 @@
 var nodes = {};
-console.log(links)
 
 // Compute the distinct nodes from the links.
 links.forEach(function(link) {
   link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
   link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
 });
-
-var w = 640,
-    h = 480;
 
 var force = d3.layout.force()
     .nodes(d3.values(nodes))

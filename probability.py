@@ -360,7 +360,7 @@ class BayesianNetwork():
 		return joint_table
 	def get_display_js(self, width=640, height=480):
 		with open('graph_display.js', 'r') as f:
-			return 'var links=[{:}];{:}'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]), f.read())
+			return 'var links=[{:}];var w={:},h={:};{:}'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]), width, height, f.read())
 	def display(self, width=640, height=480):
 		import IPython.display
 		div_id = 'probgraphdisplay'+str(random.randint(0, 65536))

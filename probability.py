@@ -240,4 +240,5 @@ print(sum([Assignment([H<<True]).consistent_with(Assignment([SingleAssignment(va
 print('')
 P_H = ConditionalTable([S, E], [H])
 print(P_H)
+print(P_H.is_valid)
 

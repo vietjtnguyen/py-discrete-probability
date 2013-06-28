@@ -7,7 +7,7 @@ class Variable():
 		self.name = name
 		self.description = name if description == '' else description
 		self.values = values
-		self.assignments = [SingleAssignment(self, value) for value in self.values]
+		self.assignments = Assignment([self<<value for value in self.values])
 	def __str__(self):
 		return self.name
 	def __repr__(self):

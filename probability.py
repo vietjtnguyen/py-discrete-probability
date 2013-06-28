@@ -74,7 +74,7 @@ class Assignment(frozenset):
 
 class JointTable():
 	def __init__(self, variables, context_assigment=()):
-		self.variables = set(variables)
+		self.variables = frozenset(variables)
 		self.context_assignment = context_assigment
 		self.assignments = Assignment.generate(self.variables)
 		self.probabilities = {}
@@ -153,6 +153,8 @@ class JointTable():
 			for assignment in assignments:
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
 		return conditional
+	def kl_divergence(self, other):
+		if other.variables
 	def __call__(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')
@@ -193,8 +195,8 @@ class JointTable():
 
 class ConditionalTable():
 	def __init__(self, variables, context_variables):
-		self.variables = set(variables)
-		self.context_variables = set(context_variables)
+		self.variables = frozenset(variables)
+		self.context_variables = frozenset(context_variables)
 		if len(self.variables.intersection(self.context_variables)) > 0:
 			raise ValueError('Context variables and table variables cannot overlap: {:} exists in both {:} and {:}.'.format(self.variables.intersection(self.context_variables), self.variables, self.context_variables))
 		self.assignments = Assignment.generate(self.variables)
@@ -242,8 +244,8 @@ class DirectedEdge():
 
 class BayesianNetwork():
 	def __init__(self, variables, edges):
-		self.variables = set(variables)
-		self.edges = edges
+		self.variables = frozenset(variables)
+		self.edges = frozenset(edges)
 		#self.check_for_cycles()
 		self.gather_families()
 	def check_for_cycles(self):

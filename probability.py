@@ -275,8 +275,7 @@ class ConditionalTable():
 		for assignment in self.context_assignments:
 			if not self.context_tables[assignment].is_valid:
 				return False
-		return True, B, C = map(Variable, ['A', 'B', 'C'])
-	bn = BayesianNetwork([A, B, C, H, S, E], [H>S,H>E,A>H,A>E,B>A,B>S,E>C,S>C])
+		return True
 	is_valid = property(validate)
 	def set_row(self, assignment, context, value):
 		self.context_tables[context].set_row(assignment, value)

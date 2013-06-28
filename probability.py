@@ -175,11 +175,11 @@ class JointTable():
 
 		if is_conditional_query:
 			is_full_conditional_query = len(filter(lambda x: isinstance(x, Variable), given)) > 0
-			context_assignment = Assignment(given)
-			conditional = self.condition_on(context_assignment.get_variables())
+			conditional = self.condition_on(given_vars)
 			if is_full_conditional_query:
 				return conditional
 			else:
+				context_assignment = Assignment(given)
 				joint = conditional.context_tables[context_assignment]
 		else:
 			joint = self

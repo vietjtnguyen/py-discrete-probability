@@ -70,6 +70,7 @@ class JointTable():
 	def __str__(self):
 		column_widths = [max(len(str(variable)), max(*[len(str(value)) for value in variable.values])) for variable in self.variables]
 		out_string = ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]) + ' | P({:})\n'.format(','.join([str(variable) for variable in self.variables]))
+		out_string += '-'*len(out_string)+'\n'
 		for assignment in self.assignments:
 			for i, variable in enumerate(self.variables):
 				out_string += str(assignment.get_variable(variable).value).ljust(column_widths[i]) + ' | '
@@ -101,7 +102,7 @@ class JointTable():
 			marginal.probabilities[marginal_assignment] = 0.0
 		for marginal_assignment in marginal.assignments:
 			for marginalized_assignment in marginalized_assignments:
-				marginal.probabilities[marginal_assignment] += self.probabilities[marginal_assignment.union([marginalized_assignment])]
+				marginal.probabilities[marginal_assignment] += self.probabilities[marginal_assignment.union(marginalized_assignment)]
 		return marginal
 	def condition(context_variables):
 		raise NotImplementedError

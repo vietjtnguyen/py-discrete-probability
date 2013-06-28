@@ -30,16 +30,17 @@ def mutual_information(distribution, X, Y):
 			proba_y = distribution(y)
 			proba_xy = distribution(x, y)
 			if proba_x > 0.0 and proba_y > 0.0 and proba_xy > 0.0:
-				mi = proba_xy * math.log(proba_xy / (proba_x * proba_y), 2)
+				mi += proba_xy * math.log(proba_xy / (proba_x * proba_y), 2)
 	return mi
 
 def kl_divergence(distribution_l, distribution_r, variables):
 	kl = 0.0
 	assignments = Assignment.generate(variables)
 	for assignment in assignments:
-		probability = distribution(*assignment)
-		if probability > 0.0:
-			kl -= probability * math.log(probability, 2)
+		probability_l = distribution_l(*assignment)
+		probability_r = distribution_r(*assignment)
+		if probability_l > 0.0 and probability_r > 0.0:
+			kl += probability_l * math.log(probability_l / probability_r, 2)
 	return kl
 
 class Variable():

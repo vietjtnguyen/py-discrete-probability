@@ -1,6 +1,6 @@
 import collections
 import math
-import StringIO
+import random
 
 GivenSeparator = collections.namedtuple('GivenSeparator', ['left', 'right'])
 class Variable():
@@ -94,6 +94,14 @@ class JointTable():
 	is_valid = property(validate)
 	def set_row(self, assignment, value):
 		self.probabilities[assignment] = value
+	def randomize(self):
+		for assignment in self.assignments:
+			self.probabilities[assignment] = random.random()
+		self.normalize()
+	def normalize(self):
+		normalizer = sum(self.probabilities.values())
+		for assignment in self.assignments:
+			self.probabilities[assignment] /= normalizer
 	def learn_from_complete_data(self, header, data):
 		total_count = float(len(data))
 		for assignment in self.assignments:
@@ -284,6 +292,9 @@ print('')
 print(P.condition([S], [H]))
 print(P.condition([S], [H]).is_valid)
 print('')
+P = JointTable([S, H, E])
+P.randomize()
+print(P)
 h, h_ = H.get_assignments()
 s, s_ = S.get_assignments()
 e, e_ = E.get_assignments()

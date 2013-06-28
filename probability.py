@@ -159,10 +159,10 @@ class JointTable():
 		if is_conditional_query:
 			if len(filter(lambda x: not isinstance(x, SingleAssignment), given_vars)) > 0:
 				raise ValueException('Conditional context must be composed of assignments only (no variables).')
-			context_assignment = Assignment([given_var.variable for given_var in given_vars])
-			conditional = self.condition_on(context_assignment)
+			context_assignment = Assignment(given_vars)
+			conditional = self.condition_on(context_assignment.get_variables())
 			if is_marginal_query:
-				return conditional
+				return conditional.context_tables[context_assignment]
 		else:
 			variables = []
 			for query_var in query_vars:

@@ -172,7 +172,7 @@ class JointTable():
 
 		if is_conditional_query:
 			if len(filter(lambda x: not isinstance(x, SingleAssignment), given_vars)) > 0:
-				raise ValueException('Conditional context must be composed of assignments only (no variables).')
+				raise ValueError('Conditional context must be composed of assignments only (no variables).')
 			context_assignment = Assignment(given_vars)
 			conditional = self.condition_on(context_assignment.get_variables())
 			joint = conditional.context_tables[context_assignment]

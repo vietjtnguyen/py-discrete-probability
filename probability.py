@@ -157,22 +157,25 @@ class JointTable():
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')
 		args = list(args)
-		query_vars = []
-		given_vars = []
+		query = []
+		given = []
 		separator_index = filter(lambda x: not (isinstance(x[1], SingleAssignment) or isinstance(x[1], Variable)), enumerate(args))
 		if separator_index == []:
-			query_vars = args
+			query = args
 		else:
 			separator_index = separator_index[0][0]
-			query_vars = args[0:separator_index] + [args[separator_index][0]]
-			given_vars = [args[separator_index][1]] + args[separator_index+1:]
+			query = args[0:separator_index] + [args[separator_index][0]]
+			given = [args[separator_index][1]] + args[separator_index+1:]
 
-		is_marginal_query = len(filter(lambda x: isinstance(x, Variable), query_vars)) > 0
-		is_conditional_query = len(given_vars) > 0
+		query_vars = map(lambda x: x if isinstance(x, Variable) else x.variable, query)
+		given_vars = map(lambda x: x if isinstance(x, Variable) else x.variable, given)
+
+		is_marginal_query = len(filter(lambda x: isinstance(x, Variable), query)) > 0
+		is_conditional_query = len(given) > 0
 
 		if is_conditional_query:
-			is_full_conditional_query = len(filter(lambda x: isinstance(x, Variable), given_vars)) > 0
-			context_assignment = Assignment(given_vars)
+			is_full_conditional_query = len(filter(lambda x: isinstance(x, Variable), given)) > 0
+			context_assignment = Assignment(given)
 			conditional = self.condition_on(context_assignment.get_variables())
 			if is_full_conditional_query:
 				return conditional
@@ -181,18 +184,11 @@ class JointTable():
 		else:
 			joint = self
 
-		variables = []
-		for query_var in query_vars:
-			if isinstance(query_var, Variable):
-				variables.append(query_var)
-			else:
-				variables.append(query_var.variable)
-
-		marginal = joint.marginalize_over(variables)
+		marginal = joint.marginalize_over(query_vars)
 		if is_marginal_query:
 			return marginal
 		else:
-			return marginal.probabilities[Assignment(query_vars)]
+			return marginal.probabilities[Assignment(query)]
 
 class ConditionalTable():
 	def __init__(self, variables, context_variables):

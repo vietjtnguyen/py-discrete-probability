@@ -98,6 +98,8 @@ class JointTable():
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= total_count
 	def marginalize_out(self, variables):
+		if not self.is_valid:
+			raise AssertionError('Cannot perform operations like marginalization until joint table is valid.')
 		marginal = JointTable(self.variables.difference(set(variables)))
 		marginalized_assignments = Assignment.generate(variables)
 		for marginal_assignment in marginal.assignments:
@@ -106,8 +108,9 @@ class JointTable():
 			for marginalized_assignment in marginalized_assignments:
 				marginal.probabilities[marginal_assignment] += self.probabilities[marginal_assignment.union(marginalized_assignment)]
 		return marginal
-	def condition(context_variables):
-		raise NotImplementedError
+	def condition(self, context_variables):
+		if not self.is_valid:
+			raise AssertionError('Cannot perform operations like marginalization until joint table is valid.')
 	def __call__(self, *args):
 		args = list(args)
 		query_vars = []

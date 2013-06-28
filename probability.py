@@ -1,6 +1,6 @@
 import collections
 import math
-import numpy as np
+import StringIO
 
 class Variable():
 	def __init__(self, name, values=(True, False), description=''):

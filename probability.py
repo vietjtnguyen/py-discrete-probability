@@ -155,9 +155,11 @@ class JointTable():
 			query_vars = args[0:separator_index] + [args[separator_index][0]]
 			given_vars = [args[separator_index][1]] + args[separator_index+1:]
 		is_marginal_query = len(filter(lambda x: isinstance(x, Variable), query_vars)) > 0
-		if len(filter(lambda x: not isinstance(x, SingleAssignment), given_vars)) > 0:
-			raise ValueException('Conditional context must be composed of assignments only (no variables).')
-		print('{:} given {:}'.format(str(query_vars), str(given_vars)))
+		is_conditional_query = len(given_vars) > 0
+		if is_conditional_query:
+			if len(filter(lambda x: not isinstance(x, SingleAssignment), given_vars)) > 0:
+				raise ValueException('Conditional context must be composed of assignments only (no variables).')
+		else:
 
 class ConditionalTable():
 	def __init__(self, variables, context_variables):

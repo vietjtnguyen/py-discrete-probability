@@ -83,7 +83,6 @@ class JointTable():
 		context = ''
 		if not self.context_assignment == None:
 			context = '|{:}'.format(str(self.context_assignment)[1:-1])
-		print(context)
 		out_string = '{:} | P({:}{:})\n'.format(' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]), ','.join([str(variable) for variable in self.variables]), context)
 		out_string += '-'*len(out_string) + '\n'
 		for assignment in self.assignments:
@@ -122,7 +121,7 @@ class JointTable():
 	def marginalize_out(self, variables):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like marginalization until joint table is valid.')
-		marginal = JointTable(self.variables.difference(set(variables)))
+		marginal = JointTable(self.variables.difference(set(variables)), self.context_assignment)
 		marginalized_assignments = Assignment.generate(variables)
 		for marginal_assignment in marginal.assignments:
 			marginal.probabilities[marginal_assignment] = 0.0

@@ -137,9 +137,13 @@ class ConditionalTable():
 		out_string = '{:} | {:} | P({:}|{:})\n'.format(' | '.join([str(variable).ljust(context_column_widths[i]) for i, variable in enumerate(self.context_variables)]), ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]), ','.join([str(variable) for variable in self.variables]), ','.join([str(variable) for variable in self.context_variables]))
 		out_string += '-'*len(out_string) + '\n'
 		for context_assignment in self.context_assignments:
-			for i, variable in enumerate(self.context_variables):
-				out_string += str(assignment.get_variable(variable).value).ljust(context_column_widths[i]) + ' | '
-			out_string += '{:}\n'.format(self.probabilities[assignment])
+			context_table = self.context_tables[context_assignment]
+			for assignment in context_table.assignments:
+				for i, variable in enumerate(self.context_variables):
+					out_string += str(context_assignment.get_variable(variable).value).ljust(context_column_widths[i]) + ' | '
+				for i, variable in enumerate(self.variables):
+					out_string += str(assignment.get_variable(variable).value).ljust(column_widths[i]) + ' | '
+				out_string += '{:}\n'.format(context_table.probabilities[assignment])
 		return out_string[:-1]
 	def validate(self):
 		for assignment in self.context_assignments:

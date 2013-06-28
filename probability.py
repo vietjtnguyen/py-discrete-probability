@@ -218,15 +218,6 @@ class ConditionalTable():
 				return False
 		return True
 	is_valid = property(validate)
-	def learn_from_complete_data(self, header, data):
-		total_count = float(len(data))
-		for assignment in self.assignments:
-			self.probabilities[assignment] = 0.0
-		for sample in data:
-			assignment = Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])
-			self.probabilities[assignment] += 1.0
-		for assignment in self.assignments:
-			self.probabilities[assignment] /= total_count
 	def set_row(self, assignment, context, value):
 		self.context_tables[context].set_row(assignment, value)
 
@@ -272,6 +263,15 @@ class BayesianNetwork():
 				return False
 		return True
 	is_valid = property(validate)
+	def learn_from_complete_data(self, header, data):
+		total_count = float(len(data))
+		for assignment in self.assignments:
+			self.probabilities[assignment] = 0.0
+		for sample in data:
+			assignment = Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])
+			self.probabilities[assignment] += 1.0
+		for assignment in self.assignments:
+			self.probabilities[assignment] /= total_count
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)
 		return joint_table

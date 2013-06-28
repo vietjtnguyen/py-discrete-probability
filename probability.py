@@ -300,9 +300,13 @@ class BayesianNetwork():
 			product = 1.0
 			for variable in self.variables:
 				conditional = self.conditionals[variable]
+				product *= conditional[assignment.project(self.families[variable])].probabilities[assignment.project(variable)]
 		return joint_table
 
 S, H, E = variables = map(Variable, ['S', 'H', 'E'])
+h, h_ = H.get_assignments()
+s, s_ = S.get_assignments()
+e, e_ = E.get_assignments()
 header=[H, S, E]
 data = [
 	[True, False, True],
@@ -321,6 +325,10 @@ data = [
 	[True, True, True],
 	[True, False, True],
 	[True, False, True]]
+print('')
+print(Assignment([s, h, e_]))
+print(Assignment([s, h, e_]).project([S, H]))
+print(Assignment([s, h, e_]).project([E]))
 P = JointTable(variables)
 P.learn_from_complete_data(header, data)
 print(P.assignments)
@@ -357,9 +365,6 @@ P = JointTable([S, H, E])
 P.randomize()
 print(P)
 print(P.is_valid)
-h, h_ = H.get_assignments()
-s, s_ = S.get_assignments()
-e, e_ = E.get_assignments()
 print(P(e))
 print(P(H,S|e))
 print(P(h,s|e))
@@ -373,8 +378,4 @@ print(network.variables)
 print(network.edges)
 for variable in network.variables:
 	print(network.conditionals[variable])
-
-print('')
-print(Assignment([s, h, e_]))
-print(Assignment([s, h, e_]).project([S, H]))
-print(Assignment([s, h, e_]).project([E]))
+print(network.as_joint_table())

@@ -69,12 +69,12 @@ class JointTable():
 			self.probabilities[assignment] = None
 	def __str__(self):
 		column_widths = [max(len(str(variable)), max(*[len(str(value)) for value in variable.values])) for variable in self.variables]
-		out_string = ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]) + ' | P({:})\n'.format(', '.join([str(variable) for variable in self.variables]))
+		out_string = ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]) + ' | P({:})\n'.format(','.join([str(variable) for variable in self.variables]))
 		for assignment in self.assignments:
 			for i, variable in enumerate(self.variables):
 				out_string += str(assignment.get_variable(variable).value).ljust(column_widths[i]) + ' | '
 			out_string += '{:}\n'.format(self.probabilities[assignment])
-		return out_string
+		return out_string[:-1]
 	def validate(self):
 		if None in self.probabilities.values():
 			return False
@@ -103,6 +103,7 @@ class JointTable():
 			for variable in variables:
 				for assignment in variable.assignments:
 					marginal.probabilities[marginal_assignment] += self.probabilities[margina_assignment.union(assignment)]
+		return marginal
 	def condition(context_variables):
 		raise NotImplementedError
 	def __call__(self, *args):

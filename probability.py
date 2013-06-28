@@ -146,6 +146,8 @@ class JointTable():
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
 		return conditional
 	def __call__(self, *args):
+		if not self.is_valid:
+			raise AssertionError('Cannot perform operations like querying until joint table is valid.')
 		args = list(args)
 		query_vars = []
 		given_vars = []
@@ -317,8 +319,8 @@ print('')
 print(P.condition([S], [H]))
 print(P.condition([S], [H]).is_valid)
 print('')
-#P = JointTable([S, H, E])
-#P.randomize()
+P = JointTable([S, H, E])
+P.randomize()
 print(P)
 print(P.is_valid)
 h, h_ = H.get_assignments()

@@ -1,6 +1,5 @@
 var nodes = {};
 console.log(links)
-alert(links);
 
 // Compute the distinct nodes from the links.
 links.forEach(function(link) {

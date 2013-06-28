@@ -238,7 +238,7 @@ print(sum([Assignment([S<<True]).consistent_with(Assignment([SingleAssignment(va
 print(sum([Assignment([S<<True, H<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
 print(sum([Assignment([H<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
 print('')
-P_H = ConditionalTable([S], [H, E])
+P_H = ConditionalTable([S], [H])
 print(P_H)
 print(P_H.is_valid)
 

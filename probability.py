@@ -363,7 +363,7 @@ class BayesianNetwork():
 			return '<script>var links=[{:}];</script>{:}'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]), f.read())
 	def display(self, width=640, height=480):
 		import IPython.display
-		IPython.display.display(IPython.display.HTML(data=self.get_display_html(width, height), raw=True))
+		IPython.display.display(IPython.display.HTML(data=self.get_display_html(width, height)), raw=True)
 
 S, H, E = variables = map(Variable, ['S', 'H', 'E'])
 h, h_ = H.get_assignments()

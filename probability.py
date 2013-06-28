@@ -269,11 +269,11 @@ class BayesianNetwork():
 	is_valid = property(validate)
 	def learn_from_complete_data(self, header, data):
 		total_count = float(len(data))
-		accum_assignments = []
+		accum_assignments = set()
 		for variable in self.variables:
 			conditional = self.conditionals[variable]
-			accum_assignments.extend(conditional.all_assignments)
-			accum_assignments.extend(conditional.context_assignments)
+			accum_assignments.update(conditional.all_assignments)
+			accum_assignments.update(conditional.context_assignments)
 			for context_assignment in conditional.context_assignments:
 				context_table = conditional.context_tables[context_assignment]
 				for assignment in conditional.assignments:

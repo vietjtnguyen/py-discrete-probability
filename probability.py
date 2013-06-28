@@ -144,6 +144,12 @@ class JointTable():
 	def set_row(self, assignment, value):
 		self.probabilities[assignment] = value
 		return self
+	def copy(self, other):
+		if not self.variables == other.variables:
+			raise KeyError('Cannot copy from joint table that does not have the same variables.')
+		for assignment in self.assignments:
+			self.probabilities[assignment] = other.probabilities[assignment]
+		return self
 	def randomize(self):
 		for assignment in self.assignments:
 			self.probabilities[assignment] = random.random()

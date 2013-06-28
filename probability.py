@@ -428,5 +428,5 @@ for variable in network.variables:
 P_b = network.as_joint_table()
 print(P_b)
 print(P)
-print(kl_divergence(P, P_b, P.variables))
+#print(kl_divergence(P, P_b, P.variables))
 print(kl_divergence(P_b, P, P.variables))

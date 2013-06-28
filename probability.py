@@ -359,7 +359,7 @@ class BayesianNetwork():
 			joint_table.probabilities[assignment] = product
 		return joint_table
 	def get_display_js(self, width=640, height=480):
-		return 'var links=[{:}];alert("{:}");'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]))
+		return 'var links=[{:}];'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]))
 	def display(self, width=640, height=480):
 		import IPython.display
 		IPython.display.display(IPython.display.Javascript(data=self.get_display_js(width, height)))

@@ -11,6 +11,8 @@ class Variable():
 		self.assignments = Assignment([self<<value for value in self.values])
 		if None in self.values:
 			raise ValueError('Cannot use None as a value. None is reserved for missing data.')
+	def get_assignments(self):
+		return [self<<value for value in self.values]
 	def __str__(self):
 		return self.name
 	def __repr__(self):
@@ -282,8 +284,8 @@ print('')
 print(P.condition([S], [H]))
 print(P.condition([S], [H]).is_valid)
 print('')
-h, h_ = H.assignments
-s, s_ = S.assignments
-e, e_ = E.assignments
+h, h_ = H.get_assignments()
+s, s_ = S.get_assignments()
+e, e_ = E.get_assignments()
 print(P(h, s_))
 

@@ -3,44 +3,44 @@ import math
 import random
 import sys
 
-def entropy(distribution, variables):
+def entropy(distr, variables):
 	ent = 0.0
 	assignments = Assignment.generate(variables)
 	for assignment in assignments:
-		probability = distribution(*assignment)
-		if probability > 0.0:
-			ent -= probability * math.log(probability, 2)
+		proba = distr(*assignment)
+		if proba > 0.0:
+			ent -= proba * math.log(proba, 2)
 	return ent
 
-def conditional_entropy(distribution, X, Y):
+def conditional_entropy(distr, X, Y):
 	ent = 0.0
 	for x in X.assignments:
 		for y in Y.assignments:
-			proba_xy = distribution(x, y)
-			proba_x_y = distribution(x | y)
+			proba_xy = distr(x, y)
+			proba_x_y = distr(x | y)
 			if proba_xy > 0.0 and proba_x_y > 0.0:
 				ent -= proba_xy * math.log(proba_x_y, 2)
 	return ent
 
-def mutual_information(distribution, X, Y):
+def mutual_information(distr, X, Y):
 	mi = 0.0
 	for x in X.assignments:
 		for y in Y.assignments:
-			proba_x = distribution(x)
-			proba_y = distribution(y)
-			proba_xy = distribution(x, y)
+			proba_x = distr(x)
+			proba_y = distr(y)
+			proba_xy = distr(x, y)
 			if proba_x > 0.0 and proba_y > 0.0 and proba_xy > 0.0:
 				mi += proba_xy * math.log(proba_xy / (proba_x * proba_y), 2)
 	return mi
 
-def kl_divergence(distribution_l, distribution_r, variables):
+def kl_divergence(distr_l, distr_r, variables):
 	kl = 0.0
 	assignments = Assignment.generate(variables)
 	for assignment in assignments:
-		probability_l = distribution_l(*assignment)
-		probability_r = distribution_r(*assignment)
-		if probability_l > 0.0 and probability_r > 0.0:
-			kl += probability_l * math.log(probability_l / probability_r, 2)
+		proba_l = distr_l(*assignment)
+		proba_r = distr_r(*assignment)
+		if proba_l > 0.0 and proba_r > 0.0:
+			kl += proba_l * math.log(proba_l / proba_r, 2)
 	return kl
 
 class Variable():
@@ -423,5 +423,5 @@ for variable in network.variables:
 P_b = network.as_joint_table()
 print(P_b)
 print(P)
-print(kl_divergence(PP_b))
-print(P_b.kl_divergence(P))
+print(kl_divergence(P, P_b))
+print(kl_divergence(P_b, P))

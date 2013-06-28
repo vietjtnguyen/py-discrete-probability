@@ -7,7 +7,7 @@ class Variable():
 		self.name = name
 		self.description = name if description == '' else description
 		self.values = values
-		self.assignments = [Assignment(self, value) for value in self.values]
+		self.assignments = [SingleAssignment(self, value) for value in self.values]
 	def __str__(self):
 		return self.name
 	def __repr__(self):
@@ -72,7 +72,7 @@ class JointTable():
 		out_string = ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]) + ' | P(.)\n'
 		for assignment in self.assignments:
 			for i, variable in enumerate(self.variables):
-				out_string += str(assignment.get_variable(variable).value).ljust(column_widths[i] + ' | '
+				out_string += str(assignment.get_variable(variable).value).ljust(column_widths[i]) + ' | '
 			out_string += '{:}\n'.format(self.probabilities[assignment])
 		return out_string
 	def validate(self):

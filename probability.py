@@ -175,11 +175,12 @@ class JointTable():
 
 		if is_conditional_query:
 			is_full_conditional_query = len(filter(lambda x: isinstance(x, Variable), given)) > 0
-			conditional = self.condition_on(given_vars)
 			if is_full_conditional_query:
-				return conditional
+				marginal = self.marginalize_over(query_vars + given_vars)
+				return marginal.condition_on(given_vars)
 			else:
 				context_assignment = Assignment(given)
+				conditional = self.condition_on(given_vars)
 				joint = conditional.context_tables[context_assignment]
 		else:
 			joint = self
@@ -381,5 +382,6 @@ print(network.variables)
 print(network.edges)
 for variable in network.variables:
 	print(network.conditionals[variable])
-print(network.as_joint_table())
+P_b = network.as_joint_table()
+print(P_b)
 print(P)

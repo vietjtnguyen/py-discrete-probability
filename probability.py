@@ -358,9 +358,11 @@ class BayesianNetwork():
 				product *= conditional.context_tables[assignment.project(self.families[variable])].probabilities[assignment.project([variable])]
 			joint_table.probabilities[assignment] = product
 		return joint_table
+	def get_display_html(self, width=640, height=480):
+		return '<script>var links=[{:}];'.format(''.join(['{source:"{:}",target:"{:}"}'.format(edge.from_var, edge.to_var) for edge in self.edges]))
 	def display(self, width=640, height=480):
 		import IPython.display
-		IPython.display.display(IPython.display.HTML(data=''))
+		IPython.display.display(IPython.display.HTML(data=self.get_display_html(width, height)))
 
 S, H, E = variables = map(Variable, ['S', 'H', 'E'])
 h, h_ = H.get_assignments()

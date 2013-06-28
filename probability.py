@@ -28,7 +28,7 @@ class Variable():
 			return DirectedEdge(self, other, True)
 		raise ValueError('Expecting Variable.')
 	def __or__(self, other):
-		return GivenSeparator(self, other)
+		return (self, other)
 	def __lshift__(self, other):
 		return SingleAssignment(self, other)
 
@@ -159,6 +159,10 @@ class JointTable():
 		if is_conditional_query:
 			if len(filter(lambda x: not isinstance(x, SingleAssignment), given_vars)) > 0:
 				raise ValueException('Conditional context must be composed of assignments only (no variables).')
+			context_assignment = Assignments(given_vars)
+			conditional = self.condition_on(context_assignment)
+			if is_marginal_query:
+				return conditional
 		else:
 			variables = []
 			for query_var in query_vars:
@@ -314,11 +318,5 @@ print(P.is_valid)
 h, h_ = H.get_assignments()
 s, s_ = S.get_assignments()
 e, e_ = E.get_assignments()
-print(P(h, s, e))
-print(P(h, e, s))
-print(P(h, e, s_))
-print(P(h, s))
-print(P(h, e))
-print(P(h))
-print(P(h_))
+print(P(H | e))
 

@@ -225,5 +225,5 @@ print(sum([Assignment([S<<True, H<<True]).consistent_with(Assignment([SingleAssi
 print(sum([Assignment([H<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
 print('')
 P_H = ConditionalTable([S, E], [H])
-print(P_h)
+print(P_H)
 

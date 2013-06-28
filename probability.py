@@ -3,6 +3,25 @@ import math
 import random
 import sys
 
+def entropy(pr, X):
+	ent = 0.0
+	for x in X.values:
+		prx = pr(X<<x)
+		if prx > 0.0:
+			ent += prx*math.log(1.0/prx, 2)
+	return ent
+
+def mutual_information(pr, X, Y):
+	mi = 0.0
+	for x in X.values:
+		for y in Y.values:
+			prx = pr(X<<x)
+			pry = pr(Y<<y)
+			prxy = pr(X<<x, Y<<y)
+			if prx > 0.0 and pry > 0.0 and prxy > 0.0:
+				mi += prxy*math.log(prxy/(prx*pry), 2)
+	return mi
+
 def inf_thr_log(x):
 	return 0.0 if x == 0.0 else math.log(x, 2)
 

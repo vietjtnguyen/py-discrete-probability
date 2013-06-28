@@ -71,7 +71,7 @@ class Assignment(frozenset):
 			return traces
 
 class JointTable():
-	def __init__(self, variables):
+	def __init__(self, variables, context_assigment=Assignment([])):
 		self.variables = set(variables)
 		self.assignments = Assignment.generate(self.variables)
 		self.probabilities = {}

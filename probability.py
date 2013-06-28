@@ -141,6 +141,12 @@ class JointTable():
 			return False
 		return True
 	is_valid = property(validate)
+	def __getitem__(self, key):
+		return self.get_row(key)
+	def __setitem__(self, key, value):
+		return self.set_row(key, value)
+	def get_row(self, assignment):
+		return self.probabilities[Assignment(assignment)]
 	def set_row(self, assignment, value):
 		self.probabilities[Assignment(assignment)] = value
 		return self

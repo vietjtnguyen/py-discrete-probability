@@ -73,13 +73,15 @@ class Assignment(frozenset):
 class JointTable():
 	def __init__(self, variables, context_assigment=Assignment([])):
 		self.variables = set(variables)
+		self.context_assignment = context_assignment
 		self.assignments = Assignment.generate(self.variables)
 		self.probabilities = {}
 		for assignment in self.assignments:
 			self.probabilities[assignment] = None
 	def __str__(self):
 		column_widths = [variable.column_width() for variable in self.variables]
-		out_string = '{:} | P({:})\n'.format(' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]), ','.join([str(variable) for variable in self.variables]))
+		context
+		out_string = '{:} | P({:}{:})\n'.format(' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]), ','.join([str(variable) for variable in self.variables]))
 		out_string += '-'*len(out_string) + '\n'
 		for assignment in self.assignments:
 			for i, variable in enumerate(self.variables):

@@ -148,14 +148,17 @@ class JointTable():
 	is_valid = property(validate)
 	def set_row(self, assignment, value):
 		self.probabilities[assignment] = value
+		return self
 	def randomize(self):
 		for assignment in self.assignments:
 			self.probabilities[assignment] = random.random()
 		self.normalize()
+		return self
 	def normalize(self):
 		normalizer = sum(self.probabilities.values())
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= normalizer
+		return self
 	def learn_from_complete_data(self, header, data):
 		total_count = float(len(data))
 		for assignment in self.assignments:
@@ -165,6 +168,7 @@ class JointTable():
 			self.probabilities[sample_assignment] += 1
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= float(total_count)
+		return self
 	def marginalize_over(self, variables):
 		return self.marginalize_out(self.variables.difference(set(variables)))
 	def marginalize_out(self, variables):
@@ -274,6 +278,7 @@ class ConditionalTable():
 	is_valid = property(validate)
 	def set_row(self, assignment, context, value):
 		self.context_tables[context].set_row(assignment, value)
+		return self
 
 class DirectedEdge():
 	def __init__(self, from_var, to_var, right=True):
@@ -342,6 +347,7 @@ class BayesianNetwork():
 				context_table = conditional.context_tables[context_assignment]
 				for assignment in conditional.assignments:
 					context_table.probabilities[assignment] = float(accumulators[assignment.union(context_assignment)])/float(accumulators[context_assignment])
+		return self
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)
 		for assignment in joint_table.assignments:

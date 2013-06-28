@@ -282,11 +282,8 @@ print('')
 print(P.condition([S], [H]))
 print(P.condition([S], [H]).is_valid)
 print('')
-h = H<<True
-h_ = H<<False
-s = S<<True
-s_ = S<<False
-e = E<<True
-e_ = E<<False
-print(P(h, s))
+h, h_ = H.assignments
+s, s_ = S.assignments
+e, e_ = E.assignments
+print(P(h, s_))
 

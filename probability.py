@@ -120,6 +120,8 @@ class JointTable():
 		context_marginal = self.marginalize_over(context_variables)
 		for context_assignment in conditional.context_assignments:
 			normalizer = context_marginal.probabilities[context_assignment]
+			if normalizer == 0.0:
+				raise ZeroDivisionError('Cannot condition due to deterministic (zero mass) probability: P({:}) = 0.0'.format(context_assignment))
 			context_table = conditional.context_tables[context_assignment]
 			for assignment in assignments:
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer

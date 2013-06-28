@@ -3,12 +3,13 @@ import math
 import random
 import sys
 
-def entropy(pr, X):
+def entropy(distribution, variables):
 	ent = 0.0
-	for x in X.values:
-		pr_x = pr(X<<x)
-		if pr_x > 0.0:
-			ent += pr_x*math.log(1.0/pr_x, 2)
+	assignments = Assignment.generate(variables)
+	for assignment in assignments:
+		probability = distribution(*assignment)
+		if probability > 0.0:
+			ent -= probability * math.log(probability, 2)
 	return ent
 
 def mutual_information(pr, X, Y):
@@ -411,5 +412,5 @@ for variable in network.variables:
 P_b = network.as_joint_table()
 print(P_b)
 print(P)
-print(P.kl_divergence(P_b))
+print(kl_divergence(PP_b))
 print(P_b.kl_divergence(P))

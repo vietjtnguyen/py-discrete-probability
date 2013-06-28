@@ -142,7 +142,7 @@ class JointTable():
 		return True
 	is_valid = property(validate)
 	def set_row(self, assignment, value):
-		self.probabilities[assignment] = value
+		self.probabilities[Assignment(assignment)] = value
 		return self
 	def copy(self, other):
 		if not self.variables == other.variables:
@@ -279,8 +279,8 @@ class ConditionalTable():
 				return False
 		return True
 	is_valid = property(validate)
-	def set_row(self, assignment, context, value):
-		self.context_tables[context].set_row(assignment, value)
+	def set_row(self, assignment, context_assignment, value):
+		self.context_tables[Assignment(context_assignment)].set_row(Assignment(assignment), value)
 		return self
 	def randomize(self):
 		for context_assignment in self.context_assignments:

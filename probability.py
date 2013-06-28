@@ -28,11 +28,8 @@ def kl_divergence(pr_l, pr_r, X):
 		pr_l_x = pr_l(X<<x)
 		pr_r_x = pr_r(X<<x)
 		if pr_l_x > 0.0 and pr_r_x > 0.0
-			kl += pr_xy*math.log(pr_xy/(pr_x*pr_y), 2)
+			kl += pr_l_x*math.log(pr_l_x/pr_r_x, 2)
 	return kl
-
-def inf_thr_log(x):
-	return 0.0 if x == 0.0 else math.log(x, 2)
 
 class Variable():
 	def __init__(self, name, values=(True, False), description=''):
@@ -184,14 +181,6 @@ class JointTable():
 			for assignment in assignments:
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
 		return conditional
-	def kl_divergence(self, other):
-		if not ( self.is_valid and other.is_valid ):
-			raise AssertionError('Cannot perform operations like finding KL divergence until joint table is valid.')
-		if not self.variables.issubset(other.variables):
-			raise KeyError('Other distribution does not share variables. {:} is not a subset of {:}'.format(self.variables, other.variables))
-		if not self.variables == other.variables:
-			other = other.marginalize_over(self.variables)
-		return sum([self.probabilities[assignment] * inf_thr_log(self.probabilities[assignment] / other.probabilities[assignment]) for assignment in self.assignments])
 	def __call__(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')

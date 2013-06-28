@@ -363,5 +363,5 @@ network.learn_from_complete_data(header, data)
 print('')
 print(network.variables)
 print(network.edges)
-for conditional in network.conditionals:
-	print(conditional)
+for variable in network.variables:
+	print(network.conditionals[variable])

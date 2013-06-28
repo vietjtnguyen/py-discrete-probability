@@ -280,6 +280,9 @@ class ConditionalTable():
 	def set_row(self, assignment, context, value):
 		self.context_tables[context].set_row(assignment, value)
 		return self
+	def randomize(self):
+		for context_assignment in self.context_assignments:
+			self.context_tables[context_assignment].randomize()
 
 class DirectedEdge():
 	def __init__(self, from_var, to_var, right=True):

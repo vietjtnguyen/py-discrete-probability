@@ -271,6 +271,10 @@ class BayesianNetwork():
 		for conditional in self.conditionals:
 			accum_assignments.extend(conditional.all_assignments)
 			accum_assignments.extend(conditional.context_assignments)
+			for context_assignment in conditional.context_assignments:
+				context_table = conditional.context_tables[context_assignment]
+				for assignment in conditional.assignments:
+					context_table.probabilities[assignment] = 0.0
 		accumulators = {}
 		for accum_assignment in accum_assignments:
 			accumulators[accum_assignment] = 0
@@ -280,9 +284,10 @@ class BayesianNetwork():
 				if accum_assignment.consistent_with(sample_assignment):
 					accumulators[accum_assignment] += 1
 		for conditional in self.conditionals:
-			for context_table in conditional.context_tables.values():
+			for context_assignment in conditional.context_assignments:
+				context_table = conditional.context_tables[context_assignment]
 				for assignment in conditional.assignments:
-					context_table.probabilities[assignment] = 0.0
+					context_table.probabilities[assignment] = float(accumulators[assignment.union(context_assignment)])/float(accumulators[context_assignment])
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)
 		return joint_table

@@ -269,7 +269,11 @@ class BayesianNetwork():
 		total_count = float(len(data))
 		accum_assignments = []
 		for conditional in self.conditionals:
-			conditional.
+			accum_assignments.extend(conditional.all_assignments)
+			accum_assignments.extend(conditional.context_assignments)
+			for context_table in conditional.context_tables.values():
+				for assignment in conditional.assignments:
+					context_table.probabilities[assignment] = 0.0
 		for assignment in self.assignments:
 			self.probabilities[assignment] = 0.0
 		for sample in data:

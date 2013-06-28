@@ -83,6 +83,7 @@ class JointTable():
 		context = ''
 		if not self.context_assignment == None:
 			context = '|{:}'.format(str(self.context_assignment)[1:-1])
+		print(context)
 		out_string = '{:} | P({:}{:})\n'.format(' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]), ','.join([str(variable) for variable in self.variables]), context)
 		out_string += '-'*len(out_string) + '\n'
 		for assignment in self.assignments:
@@ -196,8 +197,8 @@ class ConditionalTable():
 			raise ValueError('Context variables and table variables cannot overlap: {:} exists in both {:} and {:}.'.format(self.variables.intersection(self.context_variables), self.variables, self.context_variables))
 		self.context_assignments = Assignment.generate(list(self.context_variables))
 		self.context_tables = {}
-		for assignment in self.context_assignments:
-			self.context_tables[assignment] = JointTable(self.variables)
+		for context_assignment in self.context_assignments:
+			self.context_tables[context_assignment] = JointTable(self.variables, context_assignment)
 	def __str__(self):
 		context_column_widths = [variable.column_width() for variable in self.context_variables]
 		column_widths = [variable.column_width() for variable in self.variables]

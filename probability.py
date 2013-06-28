@@ -201,6 +201,8 @@ class ConditionalTable():
 		for context_assignment in self.context_assignments:
 			self.context_tables[context_assignment] = JointTable(self.variables, context_assignment)
 	def __str__(self):
+		if len(self.context_variables) == 0:
+			return str(self.context_tables[self.context_assignments[0]])
 		context_column_widths = [variable.column_width() for variable in self.context_variables]
 		column_widths = [variable.column_width() for variable in self.variables]
 		out_string = '{:} || {:} | P({:}|{:})\n'.format(' | '.join([str(variable).ljust(context_column_widths[i]) for i, variable in enumerate(self.context_variables)]), ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]), ','.join([str(variable) for variable in self.variables]), ','.join([str(variable) for variable in self.context_variables]))

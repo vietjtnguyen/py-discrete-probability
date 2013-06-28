@@ -8,6 +8,8 @@ class Variable():
 		self.description = name if description == '' else description
 		self.values = values
 		self.assignments = Assignment([self<<value for value in self.values])
+		if None in self.values:
+			raise ValueError('Cannot use None as a value. None is reserved for missing data.')
 	def __str__(self):
 		return self.name
 	def __repr__(self):

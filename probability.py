@@ -154,7 +154,11 @@ class JointTable():
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
 		return conditional
 	def kl_divergence(self, other):
-		if other.variables
+		if not ( self.is_valid and other.is_valid ):
+			raise AssertionError('Cannot perform operations like finding KL divergence until joint table is valid.')
+		if not self.variables.issubset(other):
+			raise KeyError('Other distribution does not share variables. {:} is not a subset of {:}'.format(self.variables, other.variables))
+		if 
 	def __call__(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')

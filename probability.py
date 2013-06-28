@@ -279,6 +279,14 @@ class ConditionalTable():
 				return False
 		return True
 	is_valid = property(validate)
+	def __getitem__(self, key):
+		assignment, context_assignment = key
+		return self.get_row(assignment, context_assignment, value)
+	def __setitem__(self, key, value):
+		assignment, context_assignment = key
+		return self.set_row(assignment, context_assignment, value)
+	def get_row(self, assignment, context_assignment, value):
+		return self.context_tables[Assignment(context_assignment)].probabilities[Assignment(assignment)]
 	def set_row(self, assignment, context_assignment, value):
 		self.context_tables[Assignment(context_assignment)].set_row(Assignment(assignment), value)
 		return self

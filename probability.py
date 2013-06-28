@@ -203,6 +203,8 @@ class JointTable():
 			for assignment in assignments:
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
 		return conditional
+	def direct_sample(self):
+		raise NotImplementedError
 	def __call__(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')
@@ -284,6 +286,8 @@ class ConditionalTable():
 		for context_assignment in self.context_assignments:
 			self.context_tables[context_assignment].randomize()
 		return self
+	def direct_sample(self):
+		raise NotImplementedError
 
 class DirectedEdge():
 	def __init__(self, from_var, to_var, right=True):
@@ -357,6 +361,8 @@ class BayesianNetwork():
 				for assignment in conditional.assignments:
 					context_table.probabilities[assignment] = float(accumulators[assignment.union(context_assignment)])/float(accumulators[context_assignment])
 		return self
+	def direct_sample(self):
+		raise NotImplementedError
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)
 		for assignment in joint_table.assignments:

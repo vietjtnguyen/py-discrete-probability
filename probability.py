@@ -359,7 +359,9 @@ print(P(H|e))
 print(P(h|e))
 
 network = BayesianNetwork([S, H, E], [S < H, H > E])
-network.learn_from_complete_data(data)
+network.learn_from_complete_data(header, data)
 print('')
 print(network.variables)
 print(network.edges)
+for conditional in network.conditional:
+	print(conditional)

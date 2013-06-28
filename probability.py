@@ -157,13 +157,6 @@ class JointTable():
 			query_vars = args[0:separator_index] + [args[separator_index][0]]
 			given_vars = [args[separator_index][1]] + args[separator_index+1:]
 
-		variables = []
-		for query_var in query_vars:
-			if isinstance(query_var, Variable):
-				variables.append(query_var)
-			else:
-				variables.append(query_var.variable)
-
 		is_marginal_query = len(filter(lambda x: isinstance(x, Variable), query_vars)) > 0
 		is_conditional_query = len(given_vars) > 0
 
@@ -172,17 +165,22 @@ class JointTable():
 				raise ValueException('Conditional context must be composed of assignments only (no variables).')
 			context_assignment = Assignment(given_vars)
 			conditional = self.condition_on(context_assignment.get_variables())
-			marginal = conditional.context_tables[context_assignment].marginalize_over(
-			if is_marginal_query:
-				return marginal
-			else:
-				return marginal.probabilities[Assignment(query_vars)]
+			joint = conditional.context_tables[context_assignment]
 		else:
-			marginal = self.marginalize_over(variables)
-			if is_marginal_query:
-				return marginal
+			joint = self
+
+		variables = []
+		for query_var in query_vars:
+			if isinstance(query_var, Variable):
+				variables.append(query_var)
 			else:
-				return marginal.probabilities[Assignment(query_vars)]
+				variables.append(query_var.variable)
+
+		marginal = joint.marginalize_over(variables)
+		if is_marginal_query:
+			return marginal
+		else:
+			return marginal.probabilities[Assignment(query_vars)]
 
 class ConditionalTable():
 	def __init__(self, variables, context_variables):

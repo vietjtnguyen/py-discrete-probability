@@ -113,9 +113,10 @@ class JointTable():
 	def condition(self, context_variables):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like conditioning until joint table is valid.')
+		variables = self.variables.difference(set(context_variables))
 		conditional = ConditionalTable(variables, context_variables)
 		for context_assignment in conditional.context_assignments:
-			
+			pass
 	def __call__(self, *args):
 		args = list(args)
 		query_vars = []
@@ -240,6 +241,7 @@ print(P.marginalize_out([S]))
 print(P.marginalize_out([H]))
 print(P.marginalize_out([E]))
 print(P.marginalize_out([E,S]))
+print(P.marginalize_over([E,S]))
 print(Assignment([S<<True]).complete(network.variables))
 header=[H,S,E]
 print(sum([Assignment([S<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))

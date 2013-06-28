@@ -292,11 +292,7 @@ class BayesianNetwork():
 		joint_table = JointTable(self.variables)
 		return joint_table
 
-S, H, E = map(Variable, ['S', 'H', 'E'])
-network = BayesianNetwork([S, H, E], [S < H, H > E])
-print(network.variables)
-print(network.edges)
-P = network.as_joint_table()
+S, H, E = variables = map(Variable, ['S', 'H', 'E'])
 data = [
 	[True, False, True],
 	[True, False, True],
@@ -314,7 +310,8 @@ data = [
 	[True, True, True],
 	[True, False, True],
 	[True, False, True]]
-P.learn_from_complete_data([H, S, E], data)
+P = JointTable(variables)
+P.learn_from_complete_data(variables, data)
 print(P.assignments)
 print(len(P.assignments))
 print(P.validate())
@@ -361,3 +358,6 @@ print(P(h,s|e))
 print(P(H|e))
 print(P(h|e))
 
+network = BayesianNetwork([S, H, E], [S < H, H > E])
+print(network.variables)
+print(network.edges)

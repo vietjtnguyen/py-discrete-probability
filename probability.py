@@ -138,8 +138,7 @@ class JointTable():
 		args = list(args)
 		query_vars = []
 		given_vars = []
-		separator_index = filter(lambda x: not isinstance(x[1], GivenSeparator), enumerate(args))
-		print(separator_index)
+		separator_index = filter(lambda x: not isinstance(x[1], SingleAssignment), enumerate(args))
 		if separator_index == []:
 			query_vars = args
 		else:

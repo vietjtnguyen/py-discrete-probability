@@ -125,6 +125,8 @@ class ConditionalTable():
 	def __init__(self, variables, context_variables):
 		self.variables = set(variables)
 		self.context_variables = set(context_variables)
+		if len(self.variables.intersection(self.context_variables)) > 0:
+			raise ValueError('Context variables and table variables cannot overlap: {:} exists in both {:} and {:}.'.format(self.variables.intersection(self.context_variables), self.variables, self.context_variables))
 		self.context_assignments = Assignment.generate(list(self.context_variables))
 		self.context_tables = {}
 		for assignment in self.context_assignments:
@@ -221,4 +223,7 @@ header=[H,S,E]
 print(sum([Assignment([S<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
 print(sum([Assignment([S<<True, H<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
 print(sum([Assignment([H<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
+print('')
+P_H = ConditionalTable([S, E], [H])
+print(P_h)
 

@@ -7,6 +7,7 @@ class Variable():
 		self.name = name
 		self.description = name if description == '' else description
 		self.values = values
+		self.assignments = [Assignment(self, value) for value in self.values]
 	def __str__(self):
 		return self.name
 	def __repr__(self):
@@ -84,7 +85,13 @@ class JointTable():
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= total_count
 	def marginalize(variables):
-		raise NotImplementedError
+		others = frozenset(variables).difference(self.variables)
+		marginal = JointTable(others)
+		for marginal_assignment in marginal.assignments:
+			marginal.probabilities[marginal_assignment] = 0.0
+		for marginal_assignment in marginal.assignments:
+			for 
+			marginal.probabilities[assignment] += 
 	def condition(context_variables):
 		raise NotImplementedError
 	def __call__(self, *args):

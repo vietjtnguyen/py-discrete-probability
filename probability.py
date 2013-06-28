@@ -150,13 +150,13 @@ class ConditionalTable():
 	def __str__(self):
 		context_column_widths = [variable.column_width() for variable in self.context_variables]
 		column_widths = [variable.column_width() for variable in self.variables]
-		out_string = '{:} | {:} | P({:}|{:})\n'.format(' | '.join([str(variable).ljust(context_column_widths[i]) for i, variable in enumerate(self.context_variables)]), ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]), ','.join([str(variable) for variable in self.variables]), ','.join([str(variable) for variable in self.context_variables]))
+		out_string = '{:} || {:} | P({:}|{:})\n'.format(' | '.join([str(variable).ljust(context_column_widths[i]) for i, variable in enumerate(self.context_variables)]), ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]), ','.join([str(variable) for variable in self.variables]), ','.join([str(variable) for variable in self.context_variables]))
 		out_string += '-'*len(out_string) + '\n'
 		for context_assignment in self.context_assignments:
 			context_table = self.context_tables[context_assignment]
 			for assignment in context_table.assignments:
 				for i, variable in enumerate(self.context_variables):
-					out_string += str(context_assignment.get_variable(variable).value).ljust(context_column_widths[i]) + ' | '
+					out_string += str(context_assignment.get_variable(variable).value).ljust(context_column_widths[i]) + ' || '
 				for i, variable in enumerate(self.variables):
 					out_string += str(assignment.get_variable(variable).value).ljust(column_widths[i]) + ' | '
 				out_string += '{:}\n'.format(context_table.probabilities[assignment])
@@ -267,10 +267,14 @@ print(P_H)
 print(P_H.is_valid)
 print('')
 print(P.condition([H]))
+print(P.condition([H]).is_valid)
 print('')
 print(P.condition([H,E]))
+print(P.condition([H,E]).is_valid)
 print('')
 print(P.condition([H,S]))
+print(P.condition([H,S]).is_valid)
 print('')
 print(P.condition([E,S]))
+print(P.condition([E,S]).is_valid)
 

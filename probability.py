@@ -114,7 +114,7 @@ class JointTable():
 	def condition(self, variables, context_variables):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like conditioning until joint table is valid.')
-		marginal = JointTable(set(variables).union(set(context_variables)))
+		marginal = self.marginalize_over(set(variables).union(set(context_variables)))
 		return marginal.condition_on(context_variables)
 	def condition_on(self, context_variables):
 		if not self.is_valid:

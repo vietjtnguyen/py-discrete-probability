@@ -12,6 +12,8 @@ class Variable():
 		return self.name
 	def __repr__(self):
 		return str(self)
+	def column_width(self):
+		return max(len(str(self)), max(*[len(str(value)) for value in self.values]))
 	def __lt__(self, other):
 		if isinstance(other, Variable):
 			return DirectedEdge(other, self, False)
@@ -68,7 +70,7 @@ class JointTable():
 		for assignment in self.assignments:
 			self.probabilities[assignment] = None
 	def __str__(self):
-		column_widths = [max(len(str(variable)), max(*[len(str(value)) for value in variable.values])) for variable in self.variables]
+		column_widths = [variable.column_width() for variable in self.variables]
 		out_string = ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]) + ' | P({:})\n'.format(','.join([str(variable) for variable in self.variables]))
 		out_string += '-'*len(out_string)+'\n'
 		for assignment in self.assignments:

@@ -12,15 +12,13 @@ def entropy(distribution, variables):
 			ent -= probability * math.log(probability, 2)
 	return ent
 
-def mutual_information(pr, X, Y):
+def mutual_information(distribution, variables):
 	mi = 0.0
-	for x in X.values:
-		for y in Y.values:
-			pr_x = pr(X<<x)
-			pr_y = pr(Y<<y)
-			pr_xy = pr(X<<x, Y<<y)
-			if pr_x > 0.0 and pr_y > 0.0 and pr_xy > 0.0:
-				mi += pr_xy*math.log(pr_xy/(pr_x*pr_y), 2)
+	assignments = Assignment.generate(variables)
+	for assignment in assignments:
+		probability = distribution(*assignment)
+		if probability > 0.0:
+			mi -= probability * math.log(probability, 2)
 	return mi
 
 def kl_divergence(pr_l, pr_r, X):

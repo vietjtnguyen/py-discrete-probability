@@ -42,6 +42,8 @@ class SingleAssignment(BaseAssignment):
 		return '{!s}={!s}'.format(self.variable, self.value)
 	def __repr__(self):
 		return str(self)
+	def __or__(self, other):
+		return (self, other)
 
 class Assignment(frozenset):
 	def __str__(self):
@@ -161,8 +163,11 @@ class JointTable():
 				raise ValueException('Conditional context must be composed of assignments only (no variables).')
 			context_assignment = Assignment(given_vars)
 			conditional = self.condition_on(context_assignment.get_variables())
+			marginal = conditional.context_tables[context_assignment]
 			if is_marginal_query:
-				return conditional.context_tables[context_assignment]
+				return marginal
+			else:
+				return marginal.probabilities[Assignment(query_vars)]
 		else:
 			variables = []
 			for query_var in query_vars:
@@ -320,5 +325,5 @@ s, s_ = S.get_assignments()
 e, e_ = E.get_assignments()
 print(P(e))
 print(P(H | e))
-print(P(H | e).is_valid)
+print(P(h | e))
 

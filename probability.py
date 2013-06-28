@@ -158,7 +158,11 @@ class JointTable():
 			raise AssertionError('Cannot perform operations like finding KL divergence until joint table is valid.')
 		if not self.variables.issubset(other):
 			raise KeyError('Other distribution does not share variables. {:} is not a subset of {:}'.format(self.variables, other.variables))
-		if 
+		if not self.variables == other.variables:
+			other = other.marginalize_over(self.variables)
+		accum = 0.0
+		for assignment in self.assignments:
+			accum += self.probabilities[assignment] * math.log(self.probabilities[assignment]/
 	def __call__(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')

@@ -156,7 +156,7 @@ class JointTable():
 	def kl_divergence(self, other):
 		if not ( self.is_valid and other.is_valid ):
 			raise AssertionError('Cannot perform operations like finding KL divergence until joint table is valid.')
-		if not self.variables.issubset(other):
+		if not self.variables.issubset(other.variables):
 			raise KeyError('Other distribution does not share variables. {:} is not a subset of {:}'.format(self.variables, other.variables))
 		if not self.variables == other.variables:
 			other = other.marginalize_over(self.variables)
@@ -391,3 +391,5 @@ for variable in network.variables:
 P_b = network.as_joint_table()
 print(P_b)
 print(P)
+print(P.kl_divergence(P_b))
+print(P_b.kl_divergence(P))

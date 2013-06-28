@@ -19,7 +19,7 @@ var force = d3.layout.force()
     .on("tick", tick)
     .start();
 
-var svg = d3.select("body").append("svg:svg")
+var svg = d3.select("#"+cellDivId).append("svg:svg")
     .attr("width", w)
     .attr("height", h);
 

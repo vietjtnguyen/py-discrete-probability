@@ -95,8 +95,7 @@ class JointTable():
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= total_count
 	def marginalize_out(self, variables):
-		others = frozenset(variables).difference(self.variables)
-		marginal = JointTable(others)
+		marginal = JointTable(self.variables.difference(set(variables)))
 		for marginal_assignment in marginal.assignments:
 			marginal.probabilities[marginal_assignment] = 0.0
 		for marginal_assignment in marginal.assignments:

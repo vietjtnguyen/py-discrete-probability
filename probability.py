@@ -53,6 +53,7 @@ class Assignment(frozenset):
 		return Assignment.generate(list(set(variables).difference(self.get_variables())), list(self))
 	@staticmethod
 	def generate(variables, trace=[]):
+		variables = list(variables)
 		if len(variables) == 0:
 			return [Assignment(trace)]
 		else:
@@ -65,7 +66,7 @@ class Assignment(frozenset):
 class JointTable():
 	def __init__(self, variables):
 		self.variables = set(variables)
-		self.assignments = Assignment.generate(list(self.variables))
+		self.assignments = Assignment.generate(self.variables)
 		self.probabilities = {}
 		for assignment in self.assignments:
 			self.probabilities[assignment] = None

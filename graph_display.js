@@ -1,30 +1,3 @@
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<style type="text/css">
-path.link {
-  fill: none;
-  stroke: #666;
-  stroke-width: 1.5px;
-}
-
-circle {
-  fill: #ccc;
-  stroke: #333;
-  stroke-width: 1.5px;
-}
-
-text {
-  font: 14px sans-serif;
-  pointer-events: none;
-}
-
-text.shadow {
-  stroke: #fff;
-  stroke-width: 3px;
-  stroke-opacity: .8;
-}
-
-</style>
-<script type="text/javascript">
 var nodes = {};
 
 // Compute the distinct nodes from the links.
@@ -108,4 +81,3 @@ function tick() {
     return "translate(" + d.x + "," + d.y + ")";
   });
 }
-</script>

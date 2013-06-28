@@ -359,11 +359,11 @@ class BayesianNetwork():
 			joint_table.probabilities[assignment] = product
 		return joint_table
 	def get_display_html(self, width=640, height=480):
-		with open('graph_display.html', 'r') as f:
-			return '<script>var links=[{:}];</script>{:}'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]), f.read())
+		return 'var links=[{:}];'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]))
 	def display(self, width=640, height=480):
 		import IPython.display
-		IPython.display.display(IPython.display.HTML(data=self.get_display_html(width, height)), raw=True)
+		IPython.display.display(IPython.display.Javascript(data=self.get_display_html(width, height)))
+		IPython.display.display(IPython.display.Javascript(filename='graph_display.js', lib='http://d3js.org/d3.v3.min.js', css='graph_display.css'))
 
 S, H, E = variables = map(Variable, ['S', 'H', 'E'])
 h, h_ = H.get_assignments()

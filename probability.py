@@ -52,6 +52,8 @@ class Assignment(frozenset):
 		return str(self)
 	def consistent_with(self, other):
 		return len(self.union(other)) == len(self.union(other).get_variables())
+	def project(self, variables):
+		return Assignment(filter(lambda x: x.variable in variables, self))
 	def get_variable(self, variable):
 		return filter(lambda x: x.variable == variable, self)[0]
 	def get_variables(self):
@@ -294,6 +296,10 @@ class BayesianNetwork():
 					context_table.probabilities[assignment] = float(accumulators[assignment.union(context_assignment)])/float(accumulators[context_assignment])
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)
+		for assignment in joint_table.assignments:
+			product = 1.0
+			for variable in self.variables:
+				conditional = self.conditionals[variable]
 		return joint_table
 
 S, H, E = variables = map(Variable, ['S', 'H', 'E'])

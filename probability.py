@@ -373,3 +373,8 @@ print(network.variables)
 print(network.edges)
 for variable in network.variables:
 	print(network.conditionals[variable])
+
+print('')
+print(Assignment([s, h, e_]))
+print(Assignment([s, h, e_]).project([S, H]))
+print(Assignment([s, h, e_]).project([E]))

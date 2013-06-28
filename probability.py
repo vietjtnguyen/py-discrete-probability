@@ -2,6 +2,7 @@ import collections
 import math
 import StringIO
 
+GivenSeparator = collections.namedtuple('GivenSeparator', ['left', 'right'])
 class Variable():
 	def __init__(self, name, values=(True, False), description=''):
 		self.name = name
@@ -25,7 +26,7 @@ class Variable():
 			return DirectedEdge(self, other, True)
 		raise ValueError('Expecting Variable.')
 	def __or__(self, other):
-		return (self, other)
+		return GivenSeparator(self, other)
 	def __lshift__(self, other):
 		return SingleAssignment(self, other)
 
@@ -137,7 +138,8 @@ class JointTable():
 		args = list(args)
 		query_vars = []
 		given_vars = []
-		separator_index = filter(lambda x: not isinstance(x[1], Variable), enumerate(args))
+		separator_index = filter(lambda x: not isinstance(x[1], GivenSeparator), enumerate(args))
+		print(separator_index)
 		if separator_index == []:
 			query_vars = args
 		else:

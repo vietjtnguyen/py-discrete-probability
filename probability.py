@@ -318,5 +318,7 @@ print(P.is_valid)
 h, h_ = H.get_assignments()
 s, s_ = S.get_assignments()
 e, e_ = E.get_assignments()
+print(P(e))
 print(P(H | e))
+print(P(H | e).is_valid)
 

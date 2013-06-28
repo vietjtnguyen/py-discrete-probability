@@ -16,19 +16,19 @@ def conditional_entropy(distribution, X, Y):
 	ent = 0.0
 	for x in X.assignments:
 		for y in Y.assignments:
-			proba_x = distribution(x)
-			proba_y = distribution(y)
 			proba_xy = distribution(x, y)
-			if proba_x > 0.0 and proba_y > 0.0 and proba_xy > 0.0:
-				ent -= proba_xy * math.log(proba_xy / (proba_x * proba_y), 2)
+			proba_x_y = distribution(x | y)
+			if proba_xy > 0.0 and proba_x_y > 0.0:
+				ent -= proba_xy * math.log(proba_x_y, 2)
 	return ent
 
 def mutual_information(distribution, X, Y):
 	mi = 0.0
 	for x in X.assignments:
 		for y in Y.assignments:
+			proba_x = distribution(x)
+			proba_y = distribution(y)
 			proba_xy = distribution(x, y)
-			proba_x_y = distribution(x | y)
 			if proba_x > 0.0 and proba_y > 0.0 and proba_xy > 0.0:
 				mi = proba_xy * math.log(proba_xy / (proba_x * proba_y), 2)
 	return mi

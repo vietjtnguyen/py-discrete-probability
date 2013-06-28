@@ -69,8 +69,7 @@ class JointTable():
 			self.probabilities[assignment] = None
 	def __str__(self):
 		column_widths = [max(len(str(variable)), max(*[len(str(value)) for value in variable.values])) for variable in self.variables]
-		out_string = ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]) + ' | P(.)\n'
-		out_string += '-|-'.join([''.ljust(column_widths[i], '-') for i, variable in enumerate(self.variables)]) + '-|------\n'
+		out_string = ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]) + ' | P({:})\n'.format(', '.join([str(variable) for variable in self.variables]))
 		for assignment in self.assignments:
 			for i, variable in enumerate(self.variables):
 				out_string += str(assignment.get_variable(variable).value).ljust(column_widths[i]) + ' | '

@@ -111,6 +111,11 @@ class JointTable():
 			for marginalized_assignment in marginalized_assignments:
 				marginal.probabilities[marginal_assignment] += self.probabilities[marginal_assignment.union(marginalized_assignment)]
 		return marginal
+	def condition(self, variables, context_variables):
+		if not self.is_valid:
+			raise AssertionError('Cannot perform operations like conditioning until joint table is valid.')
+		marginal = JointTable(set(variables).union(set(context_variables)))
+		return marginal.condition_on(context_variables)
 	def condition_on(self, context_variables):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like conditioning until joint table is valid.')
@@ -268,15 +273,9 @@ P_H = ConditionalTable([S], [H])
 print(P_H)
 print(P_H.is_valid)
 print('')
-print(P.condition([H]))
-print(P.condition([H]).is_valid)
+print(P.condition_on([H]))
+print(P.condition_on([H]).is_valid)
 print('')
-print(P.condition([H,E]))
-print(P.condition([H,E]).is_valid)
-print('')
-print(P.condition([H,S]))
-print(P.condition([H,S]).is_valid)
-print('')
-print(P.condition([E,S]))
-print(P.condition([E,S]).is_valid)
+print(P.condition([S], [H]))
+print(P.condition([S], [H]).is_valid)
 

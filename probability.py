@@ -285,9 +285,7 @@ class BayesianNetwork():
 			for sample in data:
 				sample_assignment = Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])
 				if accum_assignment.consistent_with(sample_assignment):
-					print(sample_assignment, accum_assignment)
 					accumulators[accum_assignment] += 1
-		print(accumulators)
 		for variable in self.variables:
 			conditional = self.conditionals[variable]
 			for context_assignment in conditional.context_assignments:

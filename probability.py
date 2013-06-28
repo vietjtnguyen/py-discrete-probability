@@ -57,7 +57,7 @@ class Assignment(frozenset):
 	def get_variables(self):
 		return frozenset([x.variable for x in self])
 	def complete(self, variables):
-		return Assignment.generate(list(set(variables).difference(self.get_variables())), list(self))
+		return Assignment.generate(set(variables).difference(self.get_variables()), list(self))
 	@staticmethod
 	def generate(variables, trace=[]):
 		variables = list(variables)
@@ -194,7 +194,9 @@ class ConditionalTable():
 		self.context_variables = set(context_variables)
 		if len(self.variables.intersection(self.context_variables)) > 0:
 			raise ValueError('Context variables and table variables cannot overlap: {:} exists in both {:} and {:}.'.format(self.variables.intersection(self.context_variables), self.variables, self.context_variables))
-		self.context_assignments = Assignment.generate(list(self.context_variables))
+		self.assignments = Assignment.generate(self.variables)
+		self.context_assignments = Assignment.generate(self.context_variables)
+		self.all_assignments = Assignment.generate(self.variables.union(self.context_variables))
 		self.context_tables = {}
 		for context_assignment in self.context_assignments:
 			self.context_tables[context_assignment] = JointTable(self.variables, context_assignment)
@@ -254,9 +256,9 @@ class BayesianNetwork():
 		for edge in self.edges:
 			self.parental_variables.add(edge.from_var)
 		self.leaf_variables = set(self.variables).difference(self.parental_variables)
-		self.parameterization = {}
+		self.conditionals = {}
 		for variable in self.variables:
-			self.parameterization[variable] = ConditionalTable([variable], self.families[variable])
+			self.conditionals[variable] = ConditionalTable([variable], self.families[variable])
 	def validate(self):
 		for variable in self.variables:
 			if not self.parameterization[variable].is_valid:
@@ -265,6 +267,9 @@ class BayesianNetwork():
 	is_valid = property(validate)
 	def learn_from_complete_data(self, header, data):
 		total_count = float(len(data))
+		accum_assignments = []
+		for conditional in self.conditionals:
+			conditional.
 		for assignment in self.assignments:
 			self.probabilities[assignment] = 0.0
 		for sample in data:

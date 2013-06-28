@@ -96,12 +96,12 @@ class JointTable():
 			self.probabilities[assignment] /= total_count
 	def marginalize_out(self, variables):
 		marginal = JointTable(self.variables.difference(set(variables)))
+		marginalized_assignments = Assignment.generate(variables)
 		for marginal_assignment in marginal.assignments:
 			marginal.probabilities[marginal_assignment] = 0.0
 		for marginal_assignment in marginal.assignments:
-			for variable in variables:
-				for assignment in variable.assignments:
-					marginal.probabilities[marginal_assignment] += self.probabilities[marginal_assignment.union([assignment])]
+			for marginalized_assignment in marginalized_assignments:
+				marginal.probabilities[marginal_assignment] += self.probabilities[marginal_assignment.union([marginalized_assignment])]
 		return marginal
 	def condition(context_variables):
 		raise NotImplementedError

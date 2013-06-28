@@ -318,4 +318,7 @@ print(P(h, s, e))
 print(P(h, e, s))
 print(P(h, e, s_))
 print(P(h, s))
+print(P(h, e))
+print(P(h))
+print(P(h_))
 

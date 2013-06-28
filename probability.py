@@ -327,6 +327,10 @@ class BayesianNetwork():
 				return False
 		return True
 	is_valid = property(validate)
+	def randomize(self):
+		for conditional in self.conditionals:
+			conditional.values().randomize()
+		return self
 	def learn_from_complete_data(self, header, data):
 		total_count = float(len(data))
 		accum_assignments = set()

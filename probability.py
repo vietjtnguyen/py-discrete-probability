@@ -115,9 +115,11 @@ class JointTable():
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like conditioning until joint table is valid.')
 		variables = self.variables.difference(set(context_variables))
+		assignments = Assignment.generate(variables)
 		conditional = ConditionalTable(variables, context_variables)
 		context_marginal = self.marginalize_over(context_variables)
 		for context_assignment in conditional.context_assignments:
+
 	def __call__(self, *args):
 		args = list(args)
 		query_vars = []

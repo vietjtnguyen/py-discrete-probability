@@ -1,6 +1,7 @@
 import collections
 import math
 import random
+import sys
 
 GivenSeparator = collections.namedtuple('GivenSeparator', ['left', 'right'])
 class Variable():
@@ -84,12 +85,10 @@ class JointTable():
 				out_string += str(assignment.get_variable(variable).value).ljust(column_widths[i]) + ' | '
 			out_string += '{:}\n'.format(self.probabilities[assignment])
 		return out_string[:-1]
-	def validate(self):
+	def validate(self, epsilon=sys.float_info.epsilon):
 		if None in self.probabilities.values():
 			return False
-		# TODO: This is probably too stringent.
-		print(sum(self.probabilities.values()))
-		if sum(self.probabilities.values()) != 1.0:
+		if abs(1.0 - sum(self.probabilities.values())) > epsilon:
 			return False
 		return True
 	is_valid = property(validate)

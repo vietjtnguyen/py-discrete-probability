@@ -311,7 +311,7 @@ def dag_parents(dag, variable):
 	variables, edges = dag
 	return frozenset(edge.from_var for edge in filter(lambda x: x.to_var == variable, edges))
 
-def dag_chldren(dag, variable):
+def dag_children(dag, variable):
 	variables, edges = dag
 	return frozenset(edge.to_var for edge in filter(lambda x: x.from_var == variable, edges))
 
@@ -353,9 +353,9 @@ class BayesianNetwork():
 		self.edges = frozenset(edges)
 		self.dag = self.variables, self.edges
 
-		self.root_variables = dag_root_variables(dag)
-		self.leaf_variables = dag_leaf_variables(dag)
-		self.families = dict(zip(variables, map(dag_parents, variables)))
+		self.root_variables = dag_root_variables(self.dag)
+		self.leaf_variables = dag_leaf_variables(self.dag)
+		self.families = dict(zip(self.variables, [dag_parents(self.dag, variable) for variable in self.variables]))
 		self.order = dag_topological_sort(dag)
 
 		self.conditionals = {}

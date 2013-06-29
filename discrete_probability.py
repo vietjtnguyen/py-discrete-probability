@@ -37,11 +37,11 @@ class Variable():
 		return max(len(str(self)), max(*[len(str(value)) for value in self.values]))
 	def __lt__(self, other):
 		if isinstance(other, Variable):
-			return DirectedEdge(other, self, False)
+			return DirectedEdge(other, self)
 		raise ValueError('Expecting Variable.')
 	def __gt__(self, other):
 		if isinstance(other, Variable):
-			return DirectedEdge(self, other, True)
+			return DirectedEdge(self, other)
 		raise ValueError('Expecting Variable.')
 	def __or__(self, other):
 		return (self, other)
@@ -336,7 +336,7 @@ class BayesianNetwork():
 		self.edges = frozenset(edges)
 		#self.check_for_cycles()
 		self.gather_families()
-		self.order = dag_topological_sort(self, variables, self.edges)
+		self.order = dag_topological_sort(variables, self.edges)
 	def gather_families(self):
 		self.root_variables = set()
 		self.families = {}

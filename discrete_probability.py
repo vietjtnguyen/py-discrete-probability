@@ -315,8 +315,6 @@ class BayesianNetwork():
 		#self.check_for_cycles()
 		self.gather_families()
 		self.create_topological_order()
-	def check_for_cycles(self):
-		raise NotImplementedError
 	def gather_families(self):
 		self.root_variables = set()
 		self.families = {}
@@ -336,10 +334,12 @@ class BayesianNetwork():
 		for variable in self.variables:
 			self.conditionals[variable] = ConditionalTable([variable], self.families[variable])
 	def create_topological_order(self):
+		'''
+		http://en.wikipedia.org/wiki/Topological_sorting
+		'''
 		order = []
 		pending = list(self.root_variables)
 		edges = set(self.edges)
-		print(order, pending, edges)
 		while len(pending) > 0:
 			variable = pending.pop()
 			order.append(variable)
@@ -354,7 +354,6 @@ class BayesianNetwork():
 		if len(edges) > 0:
 			raise ValueError('Graph has at least one cycle.')
 		self.order = order
-		print(self.order)
 
 		#order = []
 		#pending = list(self.leaf_variables)

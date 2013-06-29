@@ -372,6 +372,10 @@ class BayesianNetwork():
 		IPython.display.display(IPython.display.Javascript(data='var cellDivId="{:}";{:}'.format(div_id, self.get_display_js(width, height)), lib='http://d3js.org/d3.v3.min.js', css='/files/graph_display.css'))
 		return self
 
+################################################################################
+# Information theory
+################################################################################
+
 def entropy(distr, variables):
 	ent = 0.0
 	assignments = Assignment.generate(variables)
@@ -411,6 +415,10 @@ def kl_divergence(distr_l, distr_r, variables):
 		if proba_l > 0.0 and proba_r > 0.0:
 			kl += proba_l * log(proba_l / proba_r, 2)
 	return kl
+
+################################################################################
+# Tests
+################################################################################
 
 if __name__ == '__main__':
 	S, H, E = variables = map(Variable, ['S', 'H', 'E'])
@@ -489,3 +497,4 @@ if __name__ == '__main__':
 	P_b = network.as_joint_table()
 	print(P_b)
 	print(P)
+

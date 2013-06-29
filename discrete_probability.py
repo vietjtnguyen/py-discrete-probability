@@ -523,5 +523,5 @@ if __name__ == '__main__':
 	print(P.direct_sample(100))
 	print(P.direct_sample(100, [S,H,E]))
 	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000)))
-	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(100000)))
+	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000000)))
 

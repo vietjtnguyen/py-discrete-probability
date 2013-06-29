@@ -1,8 +1,3 @@
-import collections
-import math
-import random
-import sys
-
 class DirectedEdge():
 	def __init__(self, from_var, to_var, right=True):
 		self.from_var = from_var
@@ -31,4 +26,6 @@ class DirectedEdge():
 #	self.conditionals = {}
 #	for variable in self.variables:
 #		self.conditionals[variable] = ConditionalTable([variable], self.families[variable])
+
+from bayesnet import BayesianNetwork
 

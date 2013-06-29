@@ -540,4 +540,5 @@ if __name__ == '__main__':
 	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000, [S,H,E])))
 	A,B,C,D,E,F,G,H = map(Variable, 'ABCDEFGH')
 	nb = BayesianNetwork([A,B,C,D,E,F,G,H], [A>B,B>C,C>D,D>E,E>F,F>G,G>H])
+	nb = BayesianNetwork([A,B,C,D,E,F,G,H], [A>C,B>C,A>B,C>D,E>C,A>E,E>H,E>G,E>F,F>H])
 

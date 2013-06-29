@@ -1,7 +1,5 @@
 import math
 
-from variables import *
-
 def entropy(distr, variables):
 	ent = 0.0
 	assignments = Assignment.generate(variables)

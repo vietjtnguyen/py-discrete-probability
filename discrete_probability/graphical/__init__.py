@@ -1,6 +1,6 @@
 from random import randint
 
-from .. import JointTable, ConditionalTable
+from .. import SingleAssignment, Assignment, JointTable, ConditionalTable
 
 class DirectedEdge():
 	def __init__(self, from_var, to_var, right=True):

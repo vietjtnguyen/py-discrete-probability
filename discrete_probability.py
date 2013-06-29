@@ -416,7 +416,7 @@ class BayesianNetwork(DirectedAcyclicGraph):
 			conditional = self.conditionals[variable]
 			context_assignment = sample.project(conditional.context_variables)
 			context_table = conditional.context_tables[context_assignment]
-			context_table.direct_sample()
+			header, variable_samples = context_table.direct_sample(as_assignment=True)
 			sample = sample.union(set(conditional.context_tables[].direct_sample()[1]))
 			print(sample)
 	def direct_sample(self, num_of_samples=1, header=None):

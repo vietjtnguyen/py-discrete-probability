@@ -193,8 +193,9 @@ class JointTable():
 			for assignment in assignments:
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
 		return conditional
-	def direct_sample(self, header=list(self.variables)):
-		header = list(self.variables)
+	def direct_sample(self, header=None):
+		if header == None:
+			header = list(self.variables)
 		choices = [assignment.ordered_values(header) for assignment in self.assignments]
 		weights = [self.probabilities[assignment] for assignment in self.assignments]
 		print(zip(choices, weights))
@@ -517,4 +518,5 @@ if __name__ == '__main__':
 	P_b = network.as_joint_table()
 	print(P_b)
 	print(P)
+	print(P.direct_sample())
 

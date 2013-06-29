@@ -198,10 +198,13 @@ class JointTable():
 			for assignment in assignments:
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
 		return conditional
-	def direct_sample(self, num_of_samples=1, header=None):
+	def direct_sample(self, num_of_samples=1, header=None, as_assignment=False):
 		if header == None:
 			header = list(self.variables)
-		choices = [assignment.ordered_values(header) for assignment in self.assignments]
+		if as_assignment:
+			choices = [assignment.ordered(header) for assignment in self.assignments]
+		else:
+			choices = [assignment.ordered_values(header) for assignment in self.assignments]
 		weights = [self.probabilities[assignment] for assignment in self.assignments]
 		weighted_choices = zip(weights, choices)
 		return header, [weighted_choose(weighted_choices) for i in xrange(num_of_samples)]
@@ -411,7 +414,10 @@ class BayesianNetwork(DirectedAcyclicGraph):
 		sample = Assignment(())
 		for variable in self.topological_order:
 			conditional = self.conditionals[variable]
-			sample = sample.union(set(conditional.context_tables[sample.project(conditional.context_variables)].direct_sample()[1][0]))
+			context_assignment = sample.project(conditional.context_variables)
+			context_table = conditional.context_tables[context_assignment]
+			context_table.direct_sample()
+			sample = sample.union(set(conditional.context_tables[].direct_sample()[1]))
 			print(sample)
 	def direct_sample(self, num_of_samples=1, header=None):
 		if header == None:

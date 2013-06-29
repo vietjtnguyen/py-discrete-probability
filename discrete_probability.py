@@ -307,12 +307,21 @@ class DirectedEdge(BaseDirectedEdge):
 	def __repr__(self):
 		return str(self)
 
+def dag_root_variables(variables, edges):
+	return frozenset(filter(lambda var: len(filter(lambda edge: edge.to_var == var, edges)) == 0, variables))
+
+def dag_leaf_variables(variables, edges):
+	return frozenset(filter(lambda var: len(filter(lambda edge: edge.from_var == var, edges)) == 0, variables))
+
+def dag_families(variables, edges):
+	parents
+
 def dag_topological_sort(variables, edges):
 	'''
 	http://en.wikipedia.org/wiki/Topological_sorting
 	'''
 	order = []
-	pending = list(filter(lambda var: len(filter(lambda edge: edge.to_var == var, edges)) == 0, variables))
+	pending = list(dag_root_variables(variables, edges))
 	edges = set(edges)
 	while len(pending) > 0:
 		variable = pending.pop()

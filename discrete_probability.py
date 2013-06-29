@@ -311,17 +311,17 @@ def dag_parents(dag, variable):
 	variables, edges = dag
 	return frozenset(edge.from_var for edge in filter(lambda x: x.to_var == variable, edges))
 
-def dag_parents(dag, variable):
+def dag_chldren(dag, variable):
 	variables, edges = dag
 	return frozenset(edge.to_var for edge in filter(lambda x: x.from_var == variable, edges))
 
 def dag_root_variables(dag):
 	variables, edges = dag
-	return frozenset(filter(lambda var: len(filter(lambda edge: edge.to_var == var, edges)) == 0, variables))
+	return frozenset(filter(lambda var: len(dag_parents(dag, var)) == 0, variables))
 
 def dag_leaf_variables(dag):
 	variables, edges = dag
-	return frozenset(filter(lambda var: len(filter(lambda edge: edge.from_var == var, edges)) == 0, variables))
+	return frozenset(filter(lambda var: len(dag_children(dag, var)) == 0, variables))
 
 def dag_families(variables, edges):
 	return frozenset(variable, 

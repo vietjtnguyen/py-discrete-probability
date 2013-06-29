@@ -347,10 +347,13 @@ class BayesianNetwork():
 			edges.difference_update(out_edges)
 			print(order, pending, edges, variable, out_edges)
 			for edge in out_edges:
+				print(edge)
 				if len(filter x: x.to_var == edge.to_var, edges) == 0:
 					pending.append(edge.to_var)
-		if edges
+		if len(edges) > 0:
+			raise ValueError('Graph has at least one cycle.')
 		self.order = order
+		print(self.order)
 
 		#order = []
 		#pending = list(self.leaf_variables)

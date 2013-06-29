@@ -27,5 +27,5 @@ class DirectedEdge():
 #	for variable in self.variables:
 #		self.conditionals[variable] = ConditionalTable([variable], self.families[variable])
 
-from bayesnet import BayesianNetwork
+import bayesnet
 

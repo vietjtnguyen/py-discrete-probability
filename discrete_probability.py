@@ -309,6 +309,11 @@ class DirectedEdge(BaseDirectedEdge):
 
 def dag_parents(dag, variable):
 	variables, edges = dag
+	return frozenset(edge.from_var for edge in filter(lambda x: x.to_var == variable, edges))
+
+def dag_parents(dag, variable):
+	variables, edges = dag
+	return frozenset(edge.to_var for edge in filter(lambda x: x.from_var == variable, edges))
 
 def dag_root_variables(dag):
 	variables, edges = dag
@@ -352,6 +357,7 @@ class BayesianNetwork():
 		self.dag = self.variables, self.edges
 		#self.check_for_cycles()
 		self.gather_families()
+		self.root_variables = dag_root_variables(dag)
 		self.order = dag_topological_sort(dag)
 	def gather_families(self):
 		self.root_variables = set()

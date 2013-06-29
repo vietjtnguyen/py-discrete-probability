@@ -336,17 +336,21 @@ class BayesianNetwork():
 		for variable in self.variables:
 			self.conditionals[variable] = ConditionalTable([variable], self.families[variable])
 	def create_topological_order(self):
-		self.order = []
+		order = []
 		pending = list(self.root_variables)
 		edges = set(self.edges)
+		print(order, pending, edges)
 		while len(pending) > 0:
 			variable = pending.pop()
-			self.order.append(variable)
+			order.append(variable)
 			out_edges = filter(lambda x: x.from_var == variable, edges)
 			edges.difference_update(out_edges)
+			print(order, pending, edges, variable, out_edges)
 			for edge in out_edges:
 				if len(filter x: x.to_var == edge.to_var, edges) == 0:
 					pending.append(edge.to_var)
+		if edges
+		self.order = order
 
 		#order = []
 		#pending = list(self.leaf_variables)

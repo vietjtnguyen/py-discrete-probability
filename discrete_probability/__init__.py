@@ -122,6 +122,94 @@ class JointTable():
 			self.probabilities[assignment] = random()
 		self.normalize()
 		return self
+	def normalize(self):
+		normalizer = sum(self.probabilities.values())
+		for assignment in self.assignments:
+			self.probabilities[assignment] /= normalizer
+		return self
+	def learn_from_complete_data(self, header, data):
+		total_count = float(len(data))
+		for assignment in self.assignments:
+			self.probabilities[assignment] = 0
+		for sample in data:
+			sample_assignment = Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])
+			self.probabilities[sample_assignment] += 1
+		for assignment in self.assignments:
+			self.probabilities[assignment] /= float(total_count)
+		return self
+	def marginalize_over(self, variables):
+		return self.marginalize_out(self.variables.difference(set(variables)))
+	def marginalize_out(self, variables):
+		if not self.is_valid:
+			raise AssertionError('Cannot perform operations like marginalization until joint table is valid.')
+		marginal = JointTable(self.variables.difference(set(variables)), self.context_assignment)
+		marginalized_assignments = Assignment.generate(variables)
+		for marginal_assignment in marginal.assignments:
+			marginal.probabilities[marginal_assignment] = 0.0
+		for marginal_assignment in marginal.assignments:
+			for marginalized_assignment in marginalized_assignments:
+				marginal.probabilities[marginal_assignment] += self.probabilities[marginal_assignment.union(marginalized_assignment)]
+		return marginal
+	def condition(self, variables, context_variables):
+		if not self.is_valid:
+			raise AssertionError('Cannot perform operations like conditioning until joint table is valid.')
+		marginal = self.marginalize_over(set(variables).union(set(context_variables)))
+		return marginal.condition_on(context_variables)
+	def condition_on(self, context_variables):
+		if not self.is_valid:
+			raise AssertionError('Cannot perform operations like conditioning until joint table is valid.')
+		variables = self.variables.difference(set(context_variables))
+		assignments = Assignment.generate(variables)
+		conditional = ConditionalTable(variables, context_variables)
+		context_marginal = self.marginalize_over(context_variables)
+		for context_assignment in conditional.context_assignments:
+			normalizer = context_marginal.probabilities[context_assignment]
+			if normalizer == 0.0:
+				raise ZeroDivisionError('Cannot condition due to deterministic (zero mass) probability: P{:} = 0.0'.format(context_assignment))
+			context_table = conditional.context_tables[context_assignment]
+			for assignment in assignments:
+				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
+		return conditional
+	def direct_sample(self):
+		raise NotImplementedError
+	def __call__(self, *args):
+		if not self.is_valid:
+			raise AssertionError('Cannot perform operations like querying until joint table is valid.')
+		args = list(args)
+		query = []
+		given = []
+		separator_index = filter(lambda x: not (isinstance(x[1], SingleAssignment) or isinstance(x[1], Variable)), enumerate(args))
+		if separator_index == []:
+			query = args
+		else:
+			separator_index = separator_index[0][0]
+			query = args[0:separator_index] + [args[separator_index][0]]
+			given = [args[separator_index][1]] + args[separator_index+1:]
+
+		query_vars = map(lambda x: x if isinstance(x, Variable) else x.variable, query)
+		given_vars = map(lambda x: x if isinstance(x, Variable) else x.variable, given)
+
+		is_marginal_query = len(filter(lambda x: isinstance(x, Variable), query)) > 0
+		is_conditional_query = len(given) > 0
+
+		if is_conditional_query:
+			is_full_conditional_query = len(filter(lambda x: isinstance(x, Variable), given)) > 0
+			if is_full_conditional_query:
+				marginal = self.marginalize_over(query_vars + given_vars)
+				return marginal.condition_on(given_vars)
+			else:
+				context_assignment = Assignment(given)
+				conditional = self.condition_on(given_vars)
+				joint = conditional.context_tables[context_assignment]
+		else:
+			joint = self
+
+		marginal = joint.marginalize_over(query_vars)
+		if is_marginal_query:
+			return marginal
+		else:
+			return marginal.probabilities[Assignment(query)]
+
 
 class ConditionalTable():
 	def __init__(self, variables, context_variables):

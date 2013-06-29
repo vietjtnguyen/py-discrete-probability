@@ -339,12 +339,15 @@ class BayesianNetwork():
 		order = []
 		pending = list(self.leaf_variables)
 		while len(order) < len(self.variables):
+			working = []
 			while len(pending) > 0:
-				print(order, pending)
-				variable = pending.pop()
+				working.append(pending.pop())
+			while len(working) > 0:
+				print(order, working)
+				variable = working.pop()
 				order.append(variable)
 				for parent in self.families[variable]:
-					if parent not in order and parent not in pending:
+					if parent not in order and parent not in working and parent not in pending:
 						pending.append(parent)
 		self.order = list(reversed(order))
 		print(self.order)

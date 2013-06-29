@@ -341,7 +341,7 @@ class BayesianNetwork():
 			self.conditionals[variable] = ConditionalTable([variable], self.families[variable])
 	def validate(self):
 		for variable in self.variables:
-			if not self.parameterization[variable].is_valid:
+			if not self.conditionals[variable].is_valid:
 				return False
 		return True
 	is_valid = property(validate)

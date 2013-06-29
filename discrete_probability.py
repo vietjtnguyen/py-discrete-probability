@@ -340,12 +340,14 @@ class BayesianNetwork():
 		pending = list(self.leaf_variables)
 		while len(order) < len(self.variables):
 			while len(pending) > 0:
+				print(order, pending)
 				variable = pending.pop()
 				order.append(variable)
 				for parent in self.families[variable]:
 					if parent not in order and parent not in pending:
 						pending.append(parent)
-		self.order = reversed(order)
+		self.order = list(reversed(order))
+		print(self.order)
 	def validate(self):
 		for variable in self.variables:
 			if not self.conditionals[variable].is_valid:
@@ -533,7 +535,6 @@ if __name__ == '__main__':
 	print(P.direct_sample(100, [S,H,E]))
 	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000)))
 	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000, [S,H,E])))
-	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000000)))
 	A,B,C,D,E,F,G,H = map(Variable, 'ABCDEFGH')
 	nb = BayesianNetwork([A,B,C,D,E,F,G,H], [A>B,B>C,C>D,D>E,E>F,F>G,G>H])
 

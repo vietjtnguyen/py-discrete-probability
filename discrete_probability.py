@@ -345,7 +345,7 @@ class BayesianNetwork():
 				for parent in self.families[variable]:
 					if parent not in order and parent not in pending:
 						pending.append(parent)
-		self.order = order
+		self.order = reversed(order)
 	def validate(self):
 		for variable in self.variables:
 			if not self.conditionals[variable].is_valid:

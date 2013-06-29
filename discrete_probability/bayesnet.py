@@ -3,9 +3,7 @@ import math
 import random
 import sys
 
-from graph import *
-from tables import *
-from variables import *
+from graph import DirectedEdge
 
 class BayesianNetwork():
 	def __init__(self, variables, edges):

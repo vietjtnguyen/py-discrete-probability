@@ -1,7 +1,9 @@
-
 from collections import namedtuple
 from random import random
 from sys import float_info
+
+import graphical
+import infotheory
 
 class Variable():
 	def __init__(self, name, values=(True, False), description=''):
@@ -264,4 +266,3 @@ class ConditionalTable():
 	def direct_sample(self):
 		raise NotImplementedError
 
-__all__ = ['infotheory', 'graphical']

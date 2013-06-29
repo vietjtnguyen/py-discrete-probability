@@ -3,6 +3,8 @@ import math
 import random
 import sys
 
+from .. import *
+
 class BayesianNetwork():
 	def __init__(self, variables, edges):
 		self.variables = frozenset(variables)

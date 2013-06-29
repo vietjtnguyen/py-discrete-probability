@@ -3,8 +3,6 @@ import math
 import random
 import sys
 
-from variables import *
-
 class JointTable():
 	def __init__(self, variables, context_assigment=()):
 		self.variables = frozenset(variables)

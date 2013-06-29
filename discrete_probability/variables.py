@@ -121,3 +121,57 @@ class JointTable():
 		self.normalize()
 		return self
 
+class ConditionalTable():
+	def __init__(self, variables, context_variables):
+		self.variables = frozenset(variables)
+		self.context_variables = frozenset(context_variables)
+		if len(self.variables.intersection(self.context_variables)) > 0:
+			raise ValueError('Context variables and table variables cannot overlap: {:} exists in both {:} and {:}.'.format(self.variables.intersection(self.context_variables), self.variables, self.context_variables))
+		self.assignments = Assignment.generate(self.variables)
+		self.context_assignments = Assignment.generate(self.context_variables)
+		self.all_assignments = Assignment.generate(self.variables.union(self.context_variables))
+		self.context_tables = {}
+		for context_assignment in self.context_assignments:
+			self.context_tables[context_assignment] = JointTable(self.variables, context_assignment)
+	def __str__(self):
+		if len(self.context_variables) == 0:
+			return str(self.context_tables[self.context_assignments[0]])
+		context_column_widths = [variable.column_width() for variable in self.context_variables]
+		column_widths = [variable.column_width() for variable in self.variables]
+		out_string = '{:} || {:} | P({:}|{:})\n'.format(' | '.join([str(variable).ljust(context_column_widths[i]) for i, variable in enumerate(self.context_variables)]), ' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]), ','.join([str(variable) for variable in self.variables]), ','.join([str(variable) for variable in self.context_variables]))
+		out_string += '-'*len(out_string) + '\n'
+		for context_assignment in self.context_assignments:
+			context_table = self.context_tables[context_assignment]
+			for assignment in context_table.assignments:
+				out_string += ' | '.join([str(context_assignment.get_variable(variable).value).ljust(context_column_widths[i]) for i, variable in enumerate(self.context_variables)])
+				out_string += ' || '
+				out_string += ' | '.join([str(assignment.get_variable(variable).value).ljust(column_widths[i]) for i, variable in enumerate(self.variables)])
+				out_string += ' | '
+				out_string += '{:}\n'.format(context_table.probabilities[assignment])
+		return out_string[:-1]
+	def __repr__(self):
+		return str(self)
+	def validate(self):
+		for assignment in self.context_assignments:
+			if not self.context_tables[assignment].is_valid:
+				return False
+		return True
+	is_valid = property(validate)
+	def __getitem__(self, key):
+		assignment, context_assignment = key
+		return self.get_row(assignment, context_assignment, value)
+	def __setitem__(self, key, value):
+		assignment, context_assignment = key
+		return self.set_row(assignment, context_assignment, value)
+	def get_row(self, assignment, context_assignment, value):
+		return self.context_tables[Assignment(context_assignment)].probabilities[Assignment(assignment)]
+	def set_row(self, assignment, context_assignment, value):
+		self.context_tables[Assignment(context_assignment)].set_row(Assignment(assignment), value)
+		return self
+	def randomize(self):
+		for context_assignment in self.context_assignments:
+			self.context_tables[context_assignment].randomize()
+		return self
+	def direct_sample(self):
+		raise NotImplementedError
+

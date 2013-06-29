@@ -1,7 +1,7 @@
-import collections
-import math
-import random
-import sys
+from collections import namedtuple
+from math import log
+from random import random, randint
+from sys import float_info
 
 def entropy(distr, variables):
 	ent = 0.0
@@ -9,7 +9,7 @@ def entropy(distr, variables):
 	for assignment in assignments:
 		proba = distr(*assignment)
 		if proba > 0.0:
-			ent -= proba * math.log(proba, 2)
+			ent -= proba * log(proba, 2)
 	return ent
 
 def conditional_entropy(distr, X, Y):
@@ -19,7 +19,7 @@ def conditional_entropy(distr, X, Y):
 			proba_xy = distr(x, y)
 			proba_x_y = distr(x | y)
 			if proba_xy > 0.0 and proba_x_y > 0.0:
-				ent -= proba_xy * math.log(proba_x_y, 2)
+				ent -= proba_xy * log(proba_x_y, 2)
 	return ent
 
 def mutual_information(distr, X, Y):
@@ -30,7 +30,7 @@ def mutual_information(distr, X, Y):
 			proba_y = distr(y)
 			proba_xy = distr(x, y)
 			if proba_x > 0.0 and proba_y > 0.0 and proba_xy > 0.0:
-				mi += proba_xy * math.log(proba_xy / (proba_x * proba_y), 2)
+				mi += proba_xy * log(proba_xy / (proba_x * proba_y), 2)
 	return mi
 
 def kl_divergence(distr_l, distr_r, variables):
@@ -40,7 +40,7 @@ def kl_divergence(distr_l, distr_r, variables):
 		proba_l = distr_l(*assignment)
 		proba_r = distr_r(*assignment)
 		if proba_l > 0.0 and proba_r > 0.0:
-			kl += proba_l * math.log(proba_l / proba_r, 2)
+			kl += proba_l * log(proba_l / proba_r, 2)
 	return kl
 
 class Variable():
@@ -72,7 +72,7 @@ class Variable():
 	def __lshift__(self, other):
 		return SingleAssignment(self, other)
 
-BaseAssignment = collections.namedtuple('BaseAssignment', ['variable', 'value'])
+BaseAssignment = namedtuple('BaseAssignment', ['variable', 'value'])
 class SingleAssignment(BaseAssignment):
 	def __init__(self, variable, value):
 		super(SingleAssignment, self).__init__(variable, value)
@@ -134,7 +134,7 @@ class JointTable():
 		return out_string[:-1]
 	def __repr__(self):
 		return str(self)
-	def validate(self, epsilon=sys.float_info.epsilon):
+	def validate(self, epsilon=float_info.epsilon):
 		if None in self.probabilities.values():
 			return False
 		if abs(1.0 - sum(self.probabilities.values())) > epsilon:
@@ -158,7 +158,7 @@ class JointTable():
 		return self
 	def randomize(self):
 		for assignment in self.assignments:
-			self.probabilities[assignment] = random.random()
+			self.probabilities[assignment] = random()
 		self.normalize()
 		return self
 	def normalize(self):
@@ -391,7 +391,7 @@ class BayesianNetwork():
 			return 'var links=[{:}];var w={:},h={:};{:}'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]), width, height, f.read())
 	def display(self, width=640, height=480):
 		import IPython.display
-		div_id = 'probgraphdisplay'+str(random.randint(0, 65536))
+		div_id = 'probgraphdisplay'+str(randint(0, 65536))
 		IPython.display.display(IPython.display.HTML(data='<div id="{:}"></div>'.format(div_id)))
 		IPython.display.display(IPython.display.Javascript(data='var cellDivId="{:}";{:}'.format(div_id, self.get_display_js(width, height)), lib='http://d3js.org/d3.v3.min.js', css='/files/graph_display.css'))
 		return self

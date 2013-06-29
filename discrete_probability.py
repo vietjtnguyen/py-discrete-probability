@@ -199,6 +199,7 @@ class JointTable():
 			context_table = conditional.context_tables[context_assignment]
 			for assignment in assignments:
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
+			context_table.normalize()
 		return conditional
 	def direct_sample(self, num_of_samples=1, header=None, as_assignment=False):
 		if header == None:

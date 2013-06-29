@@ -123,10 +123,12 @@ class JointTable():
 		return out_string[:-1]
 	def __repr__(self):
 		return str(self)
+	def total_probability(self):
+		return sum(self.probabilities.values())
 	def validate(self, epsilon=float_info.epsilon):
 		if None in self.probabilities.values():
 			return False
-		if abs(1.0 - sum(self.probabilities.values())) > epsilon:
+		if abs(1.0 - self.total_probability()) > epsilon:
 			return False
 		return True
 	is_valid = property(validate)

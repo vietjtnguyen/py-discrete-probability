@@ -1,4 +1,4 @@
-import collections
+import collections.namedtuple
 import math
 import random
 import sys
@@ -71,4 +71,54 @@ class Assignment(frozenset):
 			for value in variable.values:
 				traces.extend(Assignment.generate(rest, trace+[SingleAssignment(variable, value)]))
 			return traces
+
+class JointTable():
+	def __init__(self, variables, context_assigment=()):
+		self.variables = frozenset(variables)
+		self.context_assignment = context_assigment
+		self.assignments = Assignment.generate(self.variables)
+		self.probabilities = {}
+		for assignment in self.assignments:
+			self.probabilities[assignment] = None
+	def __str__(self):
+		column_widths = [variable.column_width() for variable in self.variables]
+		context = ''
+		if len(self.context_assignment) > 0:
+			context = '|{:}'.format(str(self.context_assignment)[1:-1])
+		out_string = '{:} | P({:}{:})\n'.format(' | '.join([str(variable).ljust(column_widths[i]) for i, variable in enumerate(self.variables)]), ','.join([str(variable) for variable in self.variables]), context)
+		out_string += '-'*len(out_string) + '\n'
+		for assignment in self.assignments:
+			for i, variable in enumerate(self.variables):
+				out_string += str(assignment.get_variable(variable).value).ljust(column_widths[i]) + ' | '
+			out_string += '{:}\n'.format(self.probabilities[assignment])
+		return out_string[:-1]
+	def __repr__(self):
+		return str(self)
+	def validate(self, epsilon=sys.float_info.epsilon):
+		if None in self.probabilities.values():
+			return False
+		if abs(1.0 - sum(self.probabilities.values())) > epsilon:
+			return False
+		return True
+	is_valid = property(validate)
+	def __getitem__(self, key):
+		return self.get_row(key)
+	def __setitem__(self, key, value):
+		return self.set_row(key, value)
+	def get_row(self, assignment):
+		return self.probabilities[Assignment(assignment)]
+	def set_row(self, assignment, value):
+		self.probabilities[Assignment(assignment)] = value
+		return self
+	def copy(self, other):
+		if not self.variables == other.variables:
+			raise KeyError('Cannot copy from joint table that does not have the same variables.')
+		for assignment in self.assignments:
+			self.probabilities[assignment] = other.probabilities[assignment]
+		return self
+	def randomize(self):
+		for assignment in self.assignments:
+			self.probabilities[assignment] = random.random()
+		self.normalize()
+		return self
 

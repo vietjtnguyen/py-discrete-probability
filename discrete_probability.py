@@ -125,7 +125,7 @@ class JointTable():
 		return str(self)
 	def total_probability(self):
 		return sum(self.probabilities.values())
-	def validate(self, epsilon=0.0000000000000004):#float_info.epsilon):
+	def validate(self, epsilon=float_info.epsilon): #0.0000000000000004
 		if None in self.probabilities.values():
 			return False
 		if abs(1.0 - self.total_probability()) > epsilon:

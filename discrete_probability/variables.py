@@ -1,7 +1,6 @@
-import collections.namedtuple
-import math
-import random
-import sys
+from collections import namedtuple
+from random import random
+from sys import float_info
 
 class Variable():
 	def __init__(self, name, values=(True, False), description=''):
@@ -32,7 +31,7 @@ class Variable():
 	def __lshift__(self, other):
 		return SingleAssignment(self, other)
 
-BaseAssignment = collections.namedtuple('BaseAssignment', ['variable', 'value'])
+BaseAssignment = namedtuple('BaseAssignment', ['variable', 'value'])
 class SingleAssignment(BaseAssignment):
 	def __init__(self, variable, value):
 		super(SingleAssignment, self).__init__(variable, value)
@@ -94,7 +93,7 @@ class JointTable():
 		return out_string[:-1]
 	def __repr__(self):
 		return str(self)
-	def validate(self, epsilon=sys.float_info.epsilon):
+	def validate(self, epsilon=float_info.epsilon):
 		if None in self.probabilities.values():
 			return False
 		if abs(1.0 - sum(self.probabilities.values())) > epsilon:
@@ -118,7 +117,7 @@ class JointTable():
 		return self
 	def randomize(self):
 		for assignment in self.assignments:
-			self.probabilities[assignment] = random.random()
+			self.probabilities[assignment] = random()
 		self.normalize()
 		return self
 

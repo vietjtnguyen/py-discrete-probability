@@ -301,7 +301,7 @@ class DirectedEdge(BaseDirectedEdge):
 	def __repr__(self):
 		return str(self)
 
-def create_topological_order(variables, edges):
+def dag_topological_sort(variables, edges):
 	'''
 	http://en.wikipedia.org/wiki/Topological_sorting
 	'''
@@ -330,7 +330,7 @@ class BayesianNetwork():
 		self.edges = frozenset(edges)
 		#self.check_for_cycles()
 		self.gather_families()
-		self.create_topological_order()
+		self.order = dag_topological_sort(self, variables, self.edges)
 	def gather_families(self):
 		self.root_variables = set()
 		self.families = {}

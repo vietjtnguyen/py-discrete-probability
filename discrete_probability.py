@@ -307,19 +307,25 @@ class DirectedEdge(BaseDirectedEdge):
 	def __repr__(self):
 		return str(self)
 
-def dag_root_variables(variables, edges):
+def dag_parents(dag, variable):
+	variables, edges = dag
+
+def dag_root_variables(dag):
+	variables, edges = dag
 	return frozenset(filter(lambda var: len(filter(lambda edge: edge.to_var == var, edges)) == 0, variables))
 
-def dag_leaf_variables(variables, edges):
+def dag_leaf_variables(dag):
+	variables, edges = dag
 	return frozenset(filter(lambda var: len(filter(lambda edge: edge.from_var == var, edges)) == 0, variables))
 
 def dag_families(variables, edges):
-	parents
+	return frozenset(variable, 
 
-def dag_topological_sort(variables, edges):
+def dag_topological_sort(dag):
 	'''
 	http://en.wikipedia.org/wiki/Topological_sorting
 	'''
+	variables, edges = dag
 	order = []
 	pending = list(dag_root_variables(variables, edges))
 	edges = set(edges)
@@ -343,9 +349,10 @@ class BayesianNetwork():
 	def __init__(self, variables, edges):
 		self.variables = frozenset(variables)
 		self.edges = frozenset(edges)
+		self.dag = self.variables, self.edges
 		#self.check_for_cycles()
 		self.gather_families()
-		self.order = dag_topological_sort(variables, self.edges)
+		self.order = dag_topological_sort(dag)
 	def gather_families(self):
 		self.root_variables = set()
 		self.families = {}

@@ -198,8 +198,8 @@ class JointTable():
 			header = list(self.variables)
 		choices = [assignment.ordered_values(header) for assignment in self.assignments]
 		weights = [self.probabilities[assignment] for assignment in self.assignments]
-		print(zip(choices, weights))
-		return header, weighted_choose(zip(choices, weights))
+		print(zip(weights, choices))
+		return header, weighted_choose(zip(weights, choices))
 	def __call__(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')

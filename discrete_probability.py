@@ -202,7 +202,7 @@ class JointTable():
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
 			context_table.normalize()
 		return conditional
-	def direct_sample(self, num_of_samples=1, header=None, as_assignment=False):
+	def get_samples(self, num_of_samples=1, header=None, as_assignment=False):
 		if header == None:
 			header = list(self.variables)
 		if as_assignment:
@@ -420,10 +420,10 @@ class BayesianNetwork(DirectedAcyclicGraph):
 			conditional = self.conditionals[variable]
 			context_assignment = sample.project(conditional.context_variables)
 			context_table = conditional.context_tables[context_assignment]
-			header, variable_samples = context_table.direct_sample(as_assignment=True)
+			header, variable_samples = context_table.get_samples(as_assignment=True)
 			sample = sample.union(variable_samples[0])
 		return sample
-	def direct_sample(self, num_of_samples=1, header=None, as_assignment=False):
+	def get_samples(self, num_of_samples=1, header=None, as_assignment=False):
 		if header == None:
 			header = list(self.variables)
 		if as_assignment:
@@ -574,12 +574,12 @@ if __name__ == '__main__':
 	P_b = network.as_joint_table()
 	print(P_b)
 	print(P)
-	print(P.direct_sample())
-	print(P.direct_sample(100))
-	print(P.direct_sample(100, [S,H,E]))
+	print(P.get_samples())
+	print(P.get_samples(100))
+	print(P.get_samples(100, [S,H,E]))
 	print(network.simulate())
-	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000)))
-	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000, [S,H,E])))
+	print(JointTable([S,H,E]).learn_from_complete_data(*P.get_samples(1000)))
+	print(JointTable([S,H,E]).learn_from_complete_data(*P.get_samples(1000, [S,H,E])))
 	A,B,C,D,E,F,G,H = map(Variable, 'ABCDEFGH')
 	nb = BayesianNetwork([A,B,C,D,E,F,G,H], [A>B,B>C,C>D,D>E,E>F,F>G,G>H])
 	print(nb)

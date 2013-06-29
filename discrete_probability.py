@@ -323,9 +323,6 @@ def dag_leaf_variables(dag):
 	variables, edges = dag
 	return frozenset(filter(lambda var: len(dag_children(dag, var)) == 0, variables))
 
-def dag_families(variables, edges):
-	return frozenset(variable, 
-
 def dag_topological_sort(dag):
 	'''
 	http://en.wikipedia.org/wiki/Topological_sorting
@@ -355,9 +352,10 @@ class BayesianNetwork():
 		self.variables = frozenset(variables)
 		self.edges = frozenset(edges)
 		self.dag = self.variables, self.edges
-		#self.check_for_cycles()
 		self.gather_families()
 		self.root_variables = dag_root_variables(dag)
+		self.leaf_variables = dag_leaf_variables(dag)
+		self.families = dict(zip(variables, map(dag_parents, variables)))
 		self.order = dag_topological_sort(dag)
 	def gather_families(self):
 		self.root_variables = set()

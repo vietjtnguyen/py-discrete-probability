@@ -294,6 +294,12 @@ class ConditionalTable():
 # Graph constructs
 ################################################################################
 
+class UndirectedEdge(tuple):
+	def __str__(self):
+		return '{:} - {:}'.format(str(self.from_var), str(self.to_var))
+	def __repr__(self):
+		return str(self)
+
 BaseDirectedEdge = namedtuple('BaseDirectedEdge', ['from_var', 'to_var'])
 class DirectedEdge(BaseDirectedEdge):
 	def __str__(self):

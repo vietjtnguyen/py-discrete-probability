@@ -179,7 +179,7 @@ class JointTable():
 		for marginal_assignment in marginal.assignments:
 			for marginalized_assignment in marginalized_assignments:
 				marginal.probabilities[marginal_assignment] += self.probabilities[marginal_assignment.union(marginalized_assignment)]
-		return marginal
+		return marginal.normalize()
 	def condition(self, variables, context_variables):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like conditioning until joint table is valid.')

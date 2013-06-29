@@ -3,8 +3,6 @@ import math
 import random
 import sys
 
-from graph import *
-
 class Variable():
 	def __init__(self, name, values=(True, False), description=''):
 		self.name = name

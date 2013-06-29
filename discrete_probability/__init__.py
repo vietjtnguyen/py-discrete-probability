@@ -1,4 +1,4 @@
-__all__ = ['infotheory', 'graphical']
+__all__ = ['.', 'infotheory', 'graphical']
 
 from collections import namedtuple
 from random import random

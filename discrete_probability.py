@@ -404,8 +404,7 @@ class BayesianNetwork(DirectedAcyclicGraph):
 			conditional = self.conditionals[variable]
 			for context_assignment in conditional.context_assignments:
 				context_table = conditional.context_tables[context_assignment]
-				for assdef direct_sample(self, num_of_samples):
-							ignment in conditional.assignments:
+				for assignment in conditional.assignments:
 					context_table.probabilities[assignment] = float(accumulators[assignment.union(context_assignment)])/float(accumulators[context_assignment])
 		return self
 	def simulate(self):

@@ -1,6 +1,6 @@
 from random import randint
 
-from discrete_probability import SingleAssignment, Assignment, JointTable, ConditionalTable
+from discrete_probability import *
 
 class DirectedEdge():
 	def __init__(self, from_var, to_var, right=True):

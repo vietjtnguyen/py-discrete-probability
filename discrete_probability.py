@@ -314,6 +314,7 @@ class BayesianNetwork():
 		self.edges = frozenset(edges)
 		#self.check_for_cycles()
 		self.gather_families()
+		self.create_topological_order()
 	def check_for_cycles(self):
 		raise NotImplementedError
 	def gather_families(self):
@@ -334,6 +335,8 @@ class BayesianNetwork():
 		self.conditionals = {}
 		for variable in self.variables:
 			self.conditionals[variable] = ConditionalTable([variable], self.families[variable])
+	def create_topological_order(self):
+		order = list(self.leaf_variables)
 	def validate(self):
 		for variable in self.variables:
 			if not self.conditionals[variable].is_valid:

@@ -339,6 +339,15 @@ class BayesianNetwork():
 		self.order = []
 		pending = list(self.root_variables)
 		edges = set(self.edges)
+		while len(pending) > 0:
+			variable = pending.pop()
+			self.order.append(variable)
+			out_edges = filter(lambda x: x.from_var == variable, edges)
+			edges.difference_update(out_edges)
+			for edge in out_edges:
+				if len(filter x: x.to_var == edge.to_var, edges) == 0:
+					pending.append(edge.to_var)
+
 		#order = []
 		#pending = list(self.leaf_variables)
 		#while len(order) < len(self.variables):

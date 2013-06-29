@@ -438,7 +438,7 @@ class BayesianNetwork(DirectedAcyclicGraph):
 				conditional = self.conditionals[variable]
 				product *= conditional.context_tables[assignment.project(self.families[variable])].probabilities[assignment.project([variable])]
 			joint_table.probabilities[assignment] = product
-		return joint_table
+		return joint_table.normalize()
 	def get_display_js(self, width=640, height=480):
 		with open('graph_display.js', 'r') as f:
 			return 'var links=[{:}];var w={:},h={:};{:}'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]), width, height, f.read())

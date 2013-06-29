@@ -289,8 +289,6 @@ class ConditionalTable():
 		for context_assignment in self.context_assignments:
 			self.context_tables[context_assignment].randomize()
 		return self
-	def direct_sample(self):
-		raise NotImplementedError
 
 ################################################################################
 # Graph constructs

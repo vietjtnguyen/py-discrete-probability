@@ -200,7 +200,7 @@ class JointTable():
 		weights = [self.probabilities[assignment] for assignment in self.assignments]
 		weighted_choices = zip(weights, choices)
 		print(weighted_choices)
-		return [weighted_choose(weighted_choices) for i in xrange(num_of_samples)], header
+		return header, [weighted_choose(weighted_choices) for i in xrange(num_of_samples)]
 	def __call__(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')
@@ -522,4 +522,6 @@ if __name__ == '__main__':
 	print(P.direct_sample())
 	print(P.direct_sample(100))
 	print(P.direct_sample(100, [S,H,E]))
+	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000)))
+	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(100000)))
 

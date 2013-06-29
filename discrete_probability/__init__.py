@@ -1,4 +1,3 @@
-__all__ = ['.', 'infotheory', 'graphical']
 
 from collections import namedtuple
 from random import random
@@ -265,3 +264,4 @@ class ConditionalTable():
 	def direct_sample(self):
 		raise NotImplementedError
 
+__all__ = ['infotheory', 'graphical']

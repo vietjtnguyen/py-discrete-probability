@@ -350,6 +350,7 @@ class BayesianNetwork():
 				print(edge)
 				if len(filter(lambda x: x.to_var == edge.to_var, edges)) == 0:
 					pending.append(edge.to_var)
+					print(edge.to_var, pending)
 		if len(edges) > 0:
 			raise ValueError('Graph has at least one cycle.')
 		self.order = order

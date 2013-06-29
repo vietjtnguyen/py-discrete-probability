@@ -62,6 +62,11 @@ class SingleAssignment(BaseAssignment):
 		return (self, other)
 
 class Assignment(frozenset):
+	def __init__(self, single_assignments):
+		if isinstance(single_assignments, SingleAssignment):
+			super(Assignment, self).__init__(frozenset(single_assignments))
+		else:
+			super(Assignment, self).__init__(frozenset(single_assignments))
 	def __str__(self):
 		return '({:})'.format(', '.join([str(x) for x in self]))
 	def __repr__(self):
@@ -399,9 +404,14 @@ class BayesianNetwork(DirectedAcyclicGraph):
 			conditional = self.conditionals[variable]
 			for context_assignment in conditional.context_assignments:
 				context_table = conditional.context_tables[context_assignment]
-				for assignment in conditional.assignments:
+				for assdef direct_sample(self, num_of_samples):
+							ignment in conditional.assignments:
 					context_table.probabilities[assignment] = float(accumulators[assignment.union(context_assignment)])/float(accumulators[context_assignment])
 		return self
+	def simulate(self):
+		sample = Assignment([])
+		for variable in self.topological_order:
+
 	def direct_sample(self, num_of_samples=1, header=None):
 		if header == None:
 			header = list(self.variables)

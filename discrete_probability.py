@@ -586,9 +586,10 @@ if __name__ == '__main__':
 	Pb = nb.as_joint_table()
 	print(nb)
 	print(Pb)
-	print(Pb.is_valid())
+	print(Pb.is_valid)
 	print(Pb(A))
 	print(Pb(F))
+	print(Pb(A,F))
 	print(nb.topological_order)
 	print(nb.simulate())
 

@@ -75,9 +75,9 @@ class Assignment(frozenset):
 	def get_variables(self):
 		return frozenset([x.variable for x in self])
 	def ordered(self, order):
-		return [self.get_variable(variable) for variable in order]
+		return tuple([self.get_variable(variable) for variable in order])
 	def ordered_values(self, order):
-		return [self.get_variable(variable).value for variable in order]
+		return tuple([self.get_variable(variable).value for variable in order])
 	def complete(self, variables):
 		return Assignment.generate(set(variables).difference(self.get_variables()), list(self))
 	@staticmethod
@@ -193,13 +193,14 @@ class JointTable():
 			for assignment in assignments:
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
 		return conditional
-	def direct_sample(self, header=None):
+	def direct_sample(self, num_of_samples=1, header=None):
 		if header == None:
 			header = list(self.variables)
 		choices = [assignment.ordered_values(header) for assignment in self.assignments]
 		weights = [self.probabilities[assignment] for assignment in self.assignments]
-		print(zip(weights, choices))
-		return header, weighted_choose(zip(weights, choices))
+		weighted_choices = zip(weights, choices)
+		print(weighted_choices)
+		return header, tuple([weighted_choose(weighted_choices) for i in xrange(num_of_samples)])
 	def __call__(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')

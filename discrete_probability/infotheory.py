@@ -1,6 +1,6 @@
 from math import log
 
-from .. import Assignment
+from . import Assignment
 
 def entropy(distr, variables):
 	ent = 0.0

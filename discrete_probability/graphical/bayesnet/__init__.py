@@ -1,4 +1,4 @@
-import random
+from random import randint
 
 from .. import *
 
@@ -80,7 +80,7 @@ class BayesianNetwork():
 			return 'var links=[{:}];var w={:},h={:};{:}'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]), width, height, f.read())
 	def display(self, width=640, height=480):
 		import IPython.display
-		div_id = 'probgraphdisplay'+str(random.randint(0, 65536))
+		div_id = 'probgraphdisplay'+str(randint(0, 65536))
 		IPython.display.display(IPython.display.HTML(data='<div id="{:}"></div>'.format(div_id)))
 		IPython.display.display(IPython.display.Javascript(data='var cellDivId="{:}";{:}'.format(div_id, self.get_display_js(width, height)), lib='http://d3js.org/d3.v3.min.js', css='/files/graph_display.css'))
 		return self

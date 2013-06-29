@@ -423,13 +423,13 @@ class BayesianNetwork(DirectedAcyclicGraph):
 			header, variable_samples = context_table.direct_sample(as_assignment=True)
 			sample = sample.union(variable_samples[0])
 		return sample
-	def direct_sample(self, num_of_samples=1, header=None):
+	def direct_sample(self, num_of_samples=1, header=None, as_assignment=False):
 		if header == None:
 			header = list(self.variables)
-		choices = [assignment.ordered_values(header) for assignment in self.assignments]
-		weights = [self.probabilities[assignment] for assignment in self.assignments]
-		weighted_choices = zip(weights, choices)
-		return header, [weighted_choose(weighted_choices) for i in xrange(num_of_samples)]
+		if as_assignment:
+			return header, [self.simulate().ordered(header) for i in xrange(num_of_samples)]
+		else:
+			return header, [self.simulate().ordered_values(header) for i in xrange(num_of_samples)]
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)
 		for assignment in joint_table.assignments:

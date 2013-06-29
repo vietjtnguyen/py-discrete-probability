@@ -584,7 +584,7 @@ if __name__ == '__main__':
 	nb = BayesianNetwork([A,B,C,D,E,F,G,H], [A>B,B>C,C>D,D>E,E>F,F>G,G>H])
 	print(nb)
 	print(nb.topological_order)
-	nb = BayesianNetwork([A,B,C,D,E,F,G,H], [A>C,B>C,A>B,G>D,E>C,A>E,E>H,H>G,F>E,F>H]).randomize()
+	nb = BayesianNetwork([A,B,C,D], [A>C,B>C,A>B,D>B]).randomize()
 	Pb = nb.as_joint_table()
 	print(nb)
 	print(Pb)

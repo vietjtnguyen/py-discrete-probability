@@ -343,7 +343,7 @@ class BayesianNetwork():
 			while len(pending) > 0:
 				working.append(pending.pop())
 			while len(working) > 0:
-				print(order, working)
+				print(order, working, pending)
 				variable = working.pop()
 				order.append(variable)
 				for parent in self.families[variable]:

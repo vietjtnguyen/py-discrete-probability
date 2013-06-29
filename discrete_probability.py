@@ -306,22 +306,19 @@ def create_topological_order(variables, edges):
 	http://en.wikipedia.org/wiki/Topological_sorting
 	'''
 	order = []
-	pending = list(self.root_variables)
-	edges = set(self.edges)
+	pending = list(filter(lambda var: len(filter(lambda edge: edge.to_var == var, edges)) == 0, variables))
+	edges = set(edges)
 	while len(pending) > 0:
 		variable = pending.pop()
 		order.append(variable)
 		out_edges = filter(lambda x: x.from_var == variable, edges)
 		edges.difference_update(out_edges)
-		print(order, pending, edges, variable, out_edges)
 		for edge in out_edges:
-			print(edge)
 			if len(filter(lambda x: x.to_var == edge.to_var, edges)) == 0:
 				pending.append(edge.to_var)
-				print(edge.to_var, pending)
 	if len(edges) > 0:
 		raise ValueError('Graph has at least one cycle.')
-	self.order = order
+	return order
 
 ################################################################################
 # Graphical probabilistic models

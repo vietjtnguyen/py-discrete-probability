@@ -199,7 +199,6 @@ class JointTable():
 		choices = [assignment.ordered_values(header) for assignment in self.assignments]
 		weights = [self.probabilities[assignment] for assignment in self.assignments]
 		weighted_choices = zip(weights, choices)
-		print(weighted_choices)
 		return header, [weighted_choose(weighted_choices) for i in xrange(num_of_samples)]
 	def __call__(self, *args):
 		if not self.is_valid:
@@ -523,5 +522,6 @@ if __name__ == '__main__':
 	print(P.direct_sample(100))
 	print(P.direct_sample(100, [S,H,E]))
 	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000)))
+	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000, [S,H,E])))
 	print(JointTable([S,H,E]).learn_from_complete_data(*P.direct_sample(1000000)))
 

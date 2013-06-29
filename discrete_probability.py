@@ -336,7 +336,16 @@ class BayesianNetwork():
 		for variable in self.variables:
 			self.conditionals[variable] = ConditionalTable([variable], self.families[variable])
 	def create_topological_order(self):
-		order = list(self.leaf_variables)
+		order = []
+		pending = list(self.leaf_variables)
+		while len(order) < len(self.variables):
+			while len(pending) > 0:
+				variable = pending.pop()
+				order.append(variable)
+				for parent in self.families[variable]:
+					if parent not in order and parent not in pending:
+						pending.append(parent)
+		self.order = order
 	def validate(self):
 		for variable in self.variables:
 			if not self.conditionals[variable].is_valid:

@@ -4,6 +4,18 @@ from random import random, randint
 from sys import float_info
 
 ################################################################################
+# Utilities
+################################################################################
+
+def weighted_choose(weighted_choices):
+	x = random()
+	for weight, choice in weighted_choices:
+		if x <= weight:
+			return choice
+		x -= weight
+	raise ValueError('Total probability of choices does not sum to one.')
+
+################################################################################
 # Discrete random variables
 ################################################################################
 
@@ -62,6 +74,10 @@ class Assignment(frozenset):
 		return filter(lambda x: x.variable == variable, self)[0]
 	def get_variables(self):
 		return frozenset([x.variable for x in self])
+	def ordered(self, order):
+		return [self.get_variable(variable) for variable in order]
+	def ordered_values(self, order):
+		return [self.get_variable(variable).value for variable in order]
 	def complete(self, variables):
 		return Assignment.generate(set(variables).difference(self.get_variables()), list(self))
 	@staticmethod
@@ -177,8 +193,12 @@ class JointTable():
 			for assignment in assignments:
 				context_table.probabilities[assignment] = self.probabilities[assignment.union(context_assignment)] / normalizer
 		return conditional
-	def direct_sample(self):
-		raise NotImplementedError
+	def direct_sample(self, header=list(self.variables)):
+		header = list(self.variables)
+		choices = [assignment.ordered_values(header) for assignment in self.assignments]
+		weights = [self.probabilities[assignment] for assignment in self.assignments]
+		print(zip(choices, weights))
+		return header, weighted_choose(zip(choices, weights))
 	def __call__(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')
@@ -351,7 +371,7 @@ class BayesianNetwork():
 				for assignment in conditional.assignments:
 					context_table.probabilities[assignment] = float(accumulators[assignment.union(context_assignment)])/float(accumulators[context_assignment])
 		return self
-	def direct_sample(self):
+	def direct_sample(self, num_of_samples):
 		raise NotImplementedError
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)

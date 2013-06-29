@@ -196,11 +196,11 @@ class JointTable():
 	def direct_sample(self, num_of_samples=1, header=None):
 		if header == None:
 			header = list(self.variables)
-		choices = tuple(assignment.ordered_values(header) for assignment in self.assignments)
-		weights = tuple(self.probabilities[assignment] for assignment in self.assignments)
+		choices = [assignment.ordered_values(header) for assignment in self.assignments]
+		weights = [self.probabilities[assignment] for assignment in self.assignments]
 		weighted_choices = zip(weights, choices)
 		print(weighted_choices)
-		return header, tuple(weighted_choose(weighted_choices) for i in xrange(num_of_samples))
+		return header, [weighted_choose(weighted_choices) for i in xrange(num_of_samples)]
 	def __call__(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')

@@ -1,6 +1,6 @@
 from math import log
 
-from discrete_probability import Assignment
+#from discrete_probability import Assignment
 
 def entropy(distr, variables):
 	ent = 0.0

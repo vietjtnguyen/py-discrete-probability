@@ -352,26 +352,12 @@ class BayesianNetwork():
 		self.variables = frozenset(variables)
 		self.edges = frozenset(edges)
 		self.dag = self.variables, self.edges
-		self.gather_families()
+
 		self.root_variables = dag_root_variables(dag)
 		self.leaf_variables = dag_leaf_variables(dag)
 		self.families = dict(zip(variables, map(dag_parents, variables)))
 		self.order = dag_topological_sort(dag)
-	def gather_families(self):
-		self.root_variables = set()
-		self.families = {}
-		for variable in self.variables:
-			parents = []
-			for edge in self.edges:
-				if edge.to_var == variable:
-					parents.append(edge.from_var)
-			self.families[variable] = set(parents)
-			if len(parents) == 0:
-				self.root_variables.add(variable)
-		self.parental_variables = set()
-		for edge in self.edges:
-			self.parental_variables.add(edge.from_var)
-		self.leaf_variables = set(self.variables).difference(self.parental_variables)
+
 		self.conditionals = {}
 		for variable in self.variables:
 			self.conditionals[variable] = ConditionalTable([variable], self.families[variable])

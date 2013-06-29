@@ -402,8 +402,13 @@ class BayesianNetwork(DirectedAcyclicGraph):
 				for assignment in conditional.assignments:
 					context_table.probabilities[assignment] = float(accumulators[assignment.union(context_assignment)])/float(accumulators[context_assignment])
 		return self
-	def direct_sample(self, num_of_samples):
-		raise NotImplementedError
+	def direct_sample(self, num_of_samples=1, header=None):
+		if header == None:
+			header = list(self.variables)
+		choices = [assignment.ordered_values(header) for assignment in self.assignments]
+		weights = [self.probabilities[assignment] for assignment in self.assignments]
+		weighted_choices = zip(weights, choices)
+		return header, [weighted_choose(weighted_choices) for i in xrange(num_of_samples)]
 	def as_joint_table(self):
 		joint_table = JointTable(self.variables)
 		for assignment in joint_table.assignments:

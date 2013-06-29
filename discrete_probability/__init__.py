@@ -1,3 +1,3 @@
-__all__ = ['infotheory', 'tables', 'bayesnet']
+__all__ = ['bayesnet', 'graph', 'infotheory', 'tables', 'variables']
 from variables import *
 

@@ -411,7 +411,7 @@ class BayesianNetwork(DirectedAcyclicGraph):
 		sample = Assignment(())
 		for variable in self.topological_order:
 			conditional = self.conditionals[variable]
-			sample = sample.union(set(conditional.context_tables[sample.project(conditional.context_variables)].direct_sample()[0]))
+			sample = sample.union(set(conditional.context_tables[sample.project(conditional.context_variables)].direct_sample()[0][0]))
 			print(sample)
 	def direct_sample(self, num_of_samples=1, header=None):
 		if header == None:

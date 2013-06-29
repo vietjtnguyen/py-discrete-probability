@@ -329,7 +329,7 @@ def dag_topological_sort(dag):
 	'''
 	variables, edges = dag
 	order = []
-	pending = list(dag_root_variables(variables, edges))
+	pending = list(dag_root_variables(dag))
 	edges = set(edges)
 	while len(pending) > 0:
 		variable = pending.pop()
@@ -356,7 +356,7 @@ class BayesianNetwork():
 		self.root_variables = dag_root_variables(self.dag)
 		self.leaf_variables = dag_leaf_variables(self.dag)
 		self.families = dict(zip(self.variables, [dag_parents(self.dag, variable) for variable in self.variables]))
-		self.order = dag_topological_sort(dag)
+		self.order = dag_topological_sort(self.dag)
 
 		self.conditionals = {}
 		for variable in self.variables:

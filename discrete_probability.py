@@ -343,6 +343,19 @@ def dag_topological_sort(dag):
 		raise ValueError('Graph has at least one cycle.')
 	return order
 
+BaseDirectedAcyclicGraph = namedtuple('BaseDirectedAcyclicGraph', ['variables', 'edges'])
+class DirectedAcyclicGraph(BaseDirectedAcyclicGraph):
+	def __init__(self, variables, edges):
+		super(DirectedAcyclicGraph, self).__init__(variables, edges)
+		self.root_variables = dag_root_variables(self)
+		self.leaf_variables = dag_leaf_variables(self)
+		self.families = dict(zip(self.variables, [dag_parents(dag, variable) for variable in self.variables]))
+		self.topological_order = dag_topological_sort(self)
+	def __str__(self):
+		return str(list(self.edges))
+	def __repr__(self):
+		return str(self)
+
 ################################################################################
 # Graphical probabilistic models
 ################################################################################

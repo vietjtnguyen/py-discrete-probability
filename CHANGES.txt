@@ -1,1 +1,13 @@
-v0.6, 2013-06-29 -- Initial packaging.
+v0.7.1dev, 2013-07-02
+- Separated query parsing into a helper function
+- Added validity assertion to JointTable.get_samples
+- Noted that IPython notebook display of d3.js based graph visualization for Bayesian network is really hacky (and therefore does not work properly at the moment)
+- Moved version from setup.py to module.__version__
+- Expanded test cases to cover helpers, JointTable, and JointTable learning from complete data
+- Added some test skeletons to be filled out later
+
+v0.7.dev, 2013-06-29
+- Expectation maximization learning for incomplete data.
+
+v0.6, 2013-06-29
+- Initial packaging.

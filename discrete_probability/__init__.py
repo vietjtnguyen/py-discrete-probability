@@ -1,3 +1,5 @@
+__version__ = '0.7.1dev'
+
 from collections import namedtuple
 from math import log
 from random import random, randint
@@ -14,6 +16,24 @@ def weighted_choose(weighted_choices):
 			return choice
 		x -= weight
 	raise ValueError('Total probability of choices does not sum to one.')
+
+def parse_query(*args):
+	args = list(args)
+	query = []
+	given = []
+	separator_index = filter(lambda x: not (isinstance(x[1], SingleAssignment) or isinstance(x[1], Variable)), enumerate(args))
+	if separator_index == []:
+		query = args
+	else:
+		separator_index = separator_index[0][0]
+		query = args[0:separator_index] + [args[separator_index][0]]
+		given = [args[separator_index][1]] + args[separator_index+1:]
+	query_vars = map(lambda x: x if isinstance(x, Variable) else x.variable, query)
+	given_vars = map(lambda x: x if isinstance(x, Variable) else x.variable, given)
+	is_marginal_query = len(filter(lambda x: isinstance(x, Variable), query)) > 0
+	is_conditional_query = len(given) > 0
+	is_full_conditional_query = len(filter(lambda x: isinstance(x, Variable), given)) > 0
+	return query, query_vars, given, given_vars, is_marginal_query, is_conditional_query, is_full_conditional_query
 
 ################################################################################
 # Discrete random variables
@@ -165,6 +185,8 @@ class JointTable():
 		for assignment in self.assignments:
 			self.probabilities[assignment] /= float(total_count)
 		return self
+	def learn_with_expectation_maximization(self, header, data, initial, max_iterations=1000):
+		pass
 	def marginalize_over(self, variables):
 		return self.marginalize_out(self.variables.difference(set(variables)))
 	def marginalize_out(self, variables):
@@ -200,6 +222,8 @@ class JointTable():
 			context_table.normalize()
 		return conditional
 	def get_samples(self, num_of_samples=1, header=None, as_assignment=False):
+		if not self.is_valid:
+			raise AssertionError('Cannot perform operations like sampling until joint table is valid.')
 		if header == None:
 			header = list(self.variables)
 		if as_assignment:
@@ -210,27 +234,12 @@ class JointTable():
 		weighted_choices = zip(weights, choices)
 		return header, [weighted_choose(weighted_choices) for i in xrange(num_of_samples)]
 	def __call__(self, *args):
+		return self.query(*args)
+	def query(self, *args):
 		if not self.is_valid:
 			raise AssertionError('Cannot perform operations like querying until joint table is valid.')
-		args = list(args)
-		query = []
-		given = []
-		separator_index = filter(lambda x: not (isinstance(x[1], SingleAssignment) or isinstance(x[1], Variable)), enumerate(args))
-		if separator_index == []:
-			query = args
-		else:
-			separator_index = separator_index[0][0]
-			query = args[0:separator_index] + [args[separator_index][0]]
-			given = [args[separator_index][1]] + args[separator_index+1:]
-
-		query_vars = map(lambda x: x if isinstance(x, Variable) else x.variable, query)
-		given_vars = map(lambda x: x if isinstance(x, Variable) else x.variable, given)
-
-		is_marginal_query = len(filter(lambda x: isinstance(x, Variable), query)) > 0
-		is_conditional_query = len(given) > 0
-
+		query, query_vars, given, given_vars, is_marginal_query, is_conditional_query, is_full_conditional_query = parse_query(*args)
 		if is_conditional_query:
-			is_full_conditional_query = len(filter(lambda x: isinstance(x, Variable), given)) > 0
 			if is_full_conditional_query:
 				marginal = self.marginalize_over(query_vars + given_vars)
 				return marginal.condition_on(given_vars)
@@ -441,6 +450,7 @@ class BayesianNetwork(DirectedAcyclicGraph):
 			return 'var links=[{:}];var w={:},h={:};{:}'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]), width, height, f.read())
 	def display(self, width=640, height=480):
 		import IPython.display
+		# really hacky
 		div_id = 'probgraphdisplay'+str(randint(0, 65536))
 		IPython.display.display(IPython.display.HTML(data='<div id="{:}"></div>'.format(div_id)))
 		IPython.display.display(IPython.display.Javascript(data='var cellDivId="{:}";{:}'.format(div_id, self.get_display_js(width, height)), lib='http://d3js.org/d3.v3.min.js', css='/files/graph_display.css'))

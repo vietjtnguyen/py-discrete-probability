@@ -1,8 +1,10 @@
 from distutils.core import setup
 
+import discrete_probability
+
 setup(
     name='pyDiscreteProbability',
-    version='0.6.dev.4722cdf',
+    version=discrete_probability.__version__,
     author='Viet Nguyen',
     author_email='vnguyen@cs.ucla.edu',
     packages=['discrete_probability'],

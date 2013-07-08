@@ -44,11 +44,15 @@ class Variable():
 		self.name = name
 		self.description = name if description == '' else description
 		self.values = values
-		self.assignments = Assignment(tuple(self<<value for value in self.values))
+		self.assignments = tuple(self<<value for value in self.values)
 		if None in self.values:
 			raise ValueError('Cannot use None as a value. None is reserved for missing data.')
-	def get_assignments(self):
-		return tuple(self<<value for value in self.values)
+	def __len__(self):
+		return len(self.values)
+	def __getitem__(self, key):
+		return self.assignments[key]
+	def __iter__(self):
+		return iter(self.assignments)
 	def __str__(self):
 		return self.name
 	def __repr__(self):
@@ -84,6 +88,13 @@ class SingleAssignment(BaseAssignment):
 		return (self, other)
 
 class Assignment(frozenset):
+	def __new__(_cls, single_assignments):
+		if isinstance(single_assignments, SingleAssignment):
+			return frozenset.__new__(_cls, [single_assignments])
+		else:
+			if len(filter(lambda x: not isinstance(x, SingleAssignment), single_assignments)) > 0:
+				raise ValueError('Assignments can only be made from SingleAssignments.')
+			return frozenset.__new__(_cls, single_assignments)
 	def __str__(self):
 		return '({:})'.format(', '.join([str(x) for x in self]))
 	def __repr__(self):
@@ -113,12 +124,13 @@ class Assignment(frozenset):
 			for value in variable.values:
 				traces.extend(Assignment.generate(rest, trace+[SingleAssignment(variable, value)]))
 			return traces
+Assignment.empty = Assignment(())
 
 ################################################################################
 # Discrete probability tables
 ################################################################################
 
-class JointTable():
+class MarginalTable():
 	def __init__(self, variables, context_assigment=()):
 		self.variables = frozenset(variables)
 		self.context_assignment = context_assigment
@@ -151,17 +163,19 @@ class JointTable():
 		return True
 	is_valid = property(validate)
 	def __getitem__(self, key):
-		return self.get_row(key)
+		assignment = Assignment(key)
+		return self.get_row(assignment)
 	def __setitem__(self, key, value):
-		return self.set_row(key, value)
+		assignment = Assignment(key)
+		return self.set_row(assignment, value)
 	def get_row(self, assignment):
-		return self.probabilities[Assignment(assignment)]
+		return self.probabilities[assignment]
 	def set_row(self, assignment, value):
-		self.probabilities[Assignment(assignment)] = value
+		self.probabilities[assignment] = value
 		return self
 	def copy(self, other):
 		if not self.variables == other.variables:
-			raise KeyError('Cannot copy from joint table that does not have the same variables.')
+			raise KeyError('Cannot copy from marginal table that does not have the same variables.')
 		for assignment in self.assignments:
 			self.probabilities[assignment] = other.probabilities[assignment]
 		return self
@@ -191,8 +205,8 @@ class JointTable():
 		return self.marginalize_out(self.variables.difference(set(variables)))
 	def marginalize_out(self, variables):
 		if not self.is_valid:
-			raise AssertionError('Cannot perform operations like marginalization until joint table is valid.')
-		marginal = JointTable(self.variables.difference(set(variables)), self.context_assignment)
+			raise AssertionError('Cannot perform operations like marginalization until marginal table is valid.')
+		marginal = MarginalTable(self.variables.difference(set(variables)), self.context_assignment)
 		marginalized_assignments = Assignment.generate(variables)
 		for marginal_assignment in marginal.assignments:
 			marginal.probabilities[marginal_assignment] = 0.0
@@ -202,12 +216,12 @@ class JointTable():
 		return marginal.normalize()
 	def condition(self, variables, context_variables):
 		if not self.is_valid:
-			raise AssertionError('Cannot perform operations like conditioning until joint table is valid.')
+			raise AssertionError('Cannot perform operations like conditioning until marginal table is valid.')
 		marginal = self.marginalize_over(set(variables).union(set(context_variables)))
 		return marginal.condition_on(context_variables)
 	def condition_on(self, context_variables):
 		if not self.is_valid:
-			raise AssertionError('Cannot perform operations like conditioning until joint table is valid.')
+			raise AssertionError('Cannot perform operations like conditioning until marginal table is valid.')
 		variables = self.variables.difference(set(context_variables))
 		assignments = Assignment.generate(variables)
 		conditional = ConditionalTable(variables, context_variables)
@@ -223,7 +237,7 @@ class JointTable():
 		return conditional
 	def get_samples(self, num_of_samples=1, header=None, as_assignment=False):
 		if not self.is_valid:
-			raise AssertionError('Cannot perform operations like sampling until joint table is valid.')
+			raise AssertionError('Cannot perform operations like sampling until marginal table is valid.')
 		if header == None:
 			header = list(self.variables)
 		if as_assignment:
@@ -233,11 +247,34 @@ class JointTable():
 		weights = [self.probabilities[assignment] for assignment in self.assignments]
 		weighted_choices = zip(weights, choices)
 		return header, [weighted_choose(weighted_choices) for i in xrange(num_of_samples)]
+	def __mul__(self, other):
+		r'''
+		Note that multiplying two marginals to get a marginal marginal is only
+		valid if both marginals are independent of each other. We can see this
+		from the definition of Bayes conditioning:
+
+		$$P(a\mid b)=\frac{P(a,b)}{P(b)} \\
+		P(a,b)=P(a\mid b)P(b)$$
+
+		Note that this only holds when $P(a\mid b)=P(a)$ which is the case, by
+		definition, when $A$ is independent of $B$.
+
+		$$A\upmodels B\text{ iff }P(a\mid b)=P(a)$$
+		'''
+		if isinstance(other, MarginalTable):
+			if len(self.variables.intersection(other.variables)) > 0:
+				raise ValueError('Cannot multiply marginal tables because they share some variables: {:}'.format(', '.join([str(variable) for variable in self.variables.intersection(other.variables)])))
+			variables = self.variables.union(other.variables)
+			marginal = MarginalTable(variables)
+			for assignment in marginal.assignments:
+				marginal[assignment] = self[assignment.project(self.variables)] * other[assignment.project(other.variables)]
+			return marginal
+		raise NotImplementedError
 	def __call__(self, *args):
 		return self.query(*args)
 	def query(self, *args):
 		if not self.is_valid:
-			raise AssertionError('Cannot perform operations like querying until joint table is valid.')
+			raise AssertionError('Cannot perform operations like querying until marginal table is valid.')
 		query, query_vars, given, given_vars, is_marginal_query, is_conditional_query, is_full_conditional_query = parse_query(*args)
 		if is_conditional_query:
 			if is_full_conditional_query:
@@ -246,11 +283,11 @@ class JointTable():
 			else:
 				context_assignment = Assignment(given)
 				conditional = self.condition_on(given_vars)
-				joint = conditional.context_tables[context_assignment]
+				marginal = conditional.context_tables[context_assignment]
 		else:
-			joint = self
+			marginal = self
 
-		marginal = joint.marginalize_over(query_vars)
+		marginal = marginal.marginalize_over(query_vars)
 		if is_marginal_query:
 			return marginal
 		else:
@@ -260,6 +297,7 @@ class ConditionalTable():
 	def __init__(self, variables, context_variables):
 		self.variables = frozenset(variables)
 		self.context_variables = frozenset(context_variables)
+		self.all_variables = self.variables.union(self.context_variables)
 		if len(self.variables.intersection(self.context_variables)) > 0:
 			raise ValueError('Context variables and table variables cannot overlap: {:} exists in both {:} and {:}.'.format(self.variables.intersection(self.context_variables), self.variables, self.context_variables))
 		self.assignments = Assignment.generate(self.variables)
@@ -267,7 +305,7 @@ class ConditionalTable():
 		self.all_assignments = Assignment.generate(self.variables.union(self.context_variables))
 		self.context_tables = {}
 		for context_assignment in self.context_assignments:
-			self.context_tables[context_assignment] = JointTable(self.variables, context_assignment)
+			self.context_tables[context_assignment] = MarginalTable(self.variables, context_assignment)
 	def __str__(self):
 		if len(self.context_variables) == 0:
 			return str(self.context_tables[self.context_assignments[0]])
@@ -293,12 +331,16 @@ class ConditionalTable():
 		return True
 	is_valid = property(validate)
 	def __getitem__(self, key):
-		assignment, context_assignment = key
-		return self.get_row(assignment, context_assignment, value)
+		key = Assignment(key)
+		assignment = key.project(self.variables)
+		context_assignment = key.project(self.context_variables)
+		return self.get_row(assignment, context_assignment)
 	def __setitem__(self, key, value):
-		assignment, context_assignment = key
+		key = Assignment(key)
+		assignment = key.project(self.variables)
+		context_assignment = key.project(self.context_variables)
 		return self.set_row(assignment, context_assignment, value)
-	def get_row(self, assignment, context_assignment, value):
+	def get_row(self, assignment, context_assignment):
 		return self.context_tables[Assignment(context_assignment)].probabilities[Assignment(assignment)]
 	def set_row(self, assignment, context_assignment, value):
 		self.context_tables[Assignment(context_assignment)].set_row(Assignment(assignment), value)
@@ -307,6 +349,23 @@ class ConditionalTable():
 		for context_assignment in self.context_assignments:
 			self.context_tables[context_assignment].randomize()
 		return self
+	def __mul__(self, other):
+		'''
+		'''
+		if isinstance(other, MarginalTable):
+			if not other.variables.issubset(self.context_variables):
+				raise ValueError('Can only multiply a marginal table and conditional table if the marginal table variables are a subset of the conditional context variables: {:} is not a subset of {:}.'.format(', '.join([str(variable) for variable in other.variables]), ', '.join([str(variable) for variable in self.variables])))
+			conditional = ConditionalTable(self.variables.union(other.variables), self.context_variables.difference(other.variables))
+			for assignment in conditional.all_assignments:
+				conditional[assignment] = self[assignment.project(self.all_variables)] * other[assignment.project(other.variables)]
+			if len(conditional.context_variables) == 0:
+				return conditional.context_tables[Assignment.empty]
+			else:
+				return conditional
+		elif isinstance(other, ConditionalTable):
+			# P(c|a,b)P(a|b)=P(c|b) by chain rule
+			raise NotImplementedError
+		raise NotImplementedError
 
 ################################################################################
 # Graph constructs
@@ -436,15 +495,15 @@ class BayesianNetwork(DirectedAcyclicGraph):
 			return header, [self.simulate().ordered(header) for i in xrange(num_of_samples)]
 		else:
 			return header, [self.simulate().ordered_values(header) for i in xrange(num_of_samples)]
-	def as_joint_table(self):
-		joint_table = JointTable(self.variables)
-		for assignment in joint_table.assignments:
+	def as_marginal_table(self):
+		marginal_table = MarginalTable(self.variables)
+		for assignment in marginal_table.assignments:
 			product = 1.0
 			for variable in self.variables:
 				conditional = self.conditionals[variable]
 				product *= conditional.context_tables[assignment.project(self.families[variable])].probabilities[assignment.project([variable])]
-			joint_table.probabilities[assignment] = product
-		return joint_table.normalize()
+			marginal_table.probabilities[assignment] = product
+		return marginal_table.normalize()
 	def get_display_js(self, width=640, height=480):
 		with open('graph_display.js', 'r') as f:
 			return 'var links=[{:}];var w={:},h={:};{:}'.format(''.join(['{{source:"{:}",target:"{:}"}},'.format(edge.from_var, edge.to_var) for edge in self.edges]), width, height, f.read())

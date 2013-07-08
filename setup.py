@@ -9,7 +9,7 @@ setup(
     author_email='vnguyen@cs.ucla.edu',
     packages=['discrete_probability'],
     scripts=[],
-    url='http://pypi.python.org/pypi/pyDiscreteProbability/',
+	url='https://github.com/vietjtnguyen/py-discrete-probability',
     license='LICENSE.txt',
     description='Discrete probability learning and inference in Python.',
     long_description=open('README.txt').read(),

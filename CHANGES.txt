@@ -1,3 +1,27 @@
+v0.8dev, 2013-07-07
+- Removed Variable.get_assignments() and instead made Variable emulate sequence types for tuple unpacking
+- Completed Assignment tests
+- Added MarginalTable multiplication tests
+- Added ConditionalTable tests
+- Allowed construction of Assignment from a SingleAssignment instance (as opposited to having to create a sequence with one instance of SingleAssignment) so
+    a = Assignment(A<<True)
+  works without having to do
+    a = Assignment([A<<True])
+  which also works
+- Renamed JointTable to MarginalTable
+- Added MarginalTable multiplication with MarginalTable
+- Added ConditionalTable multiplication with MarginalTable
+- Added an all_variables member to ConditionalTable
+- Fixed item getting and setting keying for ConditionalTable, allows specification of variables without explicit specification of which ones are context or not
+- Added repository and package links to README
+- Added TODO section to README
+- Added References section to README
+- Renamed bn_test.ipynb to basics.ipynb
+- Added markdown files to MANIFEST.in
+- Added symbolic link to module in bin/examples
+- Added some distribution archives
+- Changed package URL to GitHub repo URL
+
 v0.7.1dev, 2013-07-02
 - Separated query parsing into a helper function
 - Added validity assertion to JointTable.get_samples

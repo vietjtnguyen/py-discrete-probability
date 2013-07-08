@@ -10,8 +10,8 @@ class TestBasics(unittest.TestCase):
 				weighted_choose([(0.5, 'A'), (0.4, 'B')])
 			self.fail("You're very unlucky.")
 		A, B = map(Variable, 'AB')
-		a, a_ = A.get_assignments()
-		b, b_ = B.get_assignments()
+		a, a_ = A
+		b, b_ = B
 		query, query_vars, given, given_vars, is_marginal_query, is_conditional_query, is_full_conditional_query = parse_query(A, B)
 		self.assertListEqual(query, [A, B])
 		self.assertListEqual(query_vars, [A, B])
@@ -50,13 +50,17 @@ class TestBasics(unittest.TestCase):
 		self.assertTrue(is_marginal_query)
 		self.assertTrue(is_conditional_query)
 		self.assertTrue(is_full_conditional_query)
+		self.assertTupleEqual(A | B, (A, B))
+		self.assertTupleEqual(a | B, (a, B))
+		self.assertTupleEqual(A | b, (A, b))
+		self.assertTupleEqual(a | b, (a, b))
 	def test_binary_variable(self):
 		A = Variable('A')
 		self.assertEqual(A.values, (True, False))
 		self.assertEqual(A.description, 'A')
 		self.assertEqual(SingleAssignment(A, True), A << True)
 		self.assertEqual(SingleAssignment(A, False), A << False)
-		self.assertEqual(A.get_assignments(), (A << True, A << False))
+		self.assertEqual(A.assignments, (A << True, A << False))
 		self.assertTrue(isinstance(A << False, SingleAssignment))
 		self.assertTrue(isinstance(A << True, SingleAssignment))
 		with self.assertRaises(ValueError):
@@ -69,37 +73,63 @@ class TestBasics(unittest.TestCase):
 		self.assertEqual(SingleAssignment(B, 1), B << 1)
 		self.assertEqual(SingleAssignment(B, 'x'), B << 'x')
 		self.assertEqual(SingleAssignment(B, 'y'), B << 'y')
-		self.assertEqual(B.get_assignments(), (B << 0, B << 1, B << 'x', B << 'y'))
+		self.assertEqual(B.assignments, (B << 0, B << 1, B << 'x', B << 'y'))
 		self.assertTrue(isinstance(B << 0, SingleAssignment))
 		self.assertTrue(isinstance(B << 1, SingleAssignment))
 		self.assertTrue(isinstance(B << 'x', SingleAssignment))
 		self.assertTrue(isinstance(B << 'y', SingleAssignment))
 		with self.assertRaises(ValueError):
 			B << 'a'
-		# TODO: Test __or__
 	def test_assignment(self):
-		pass
-		# TODO: Test consistent_with
-		# TODO: Test project
-		# TODO: Test get_variable
-		# TODO: Test get_variables
-		# TODO: Test ordered
-		# TODO: Test ordered_values
-		# TODO: Test complete
-		# TODO: Test generate
+		A, B, C = map(Variable, 'ABC')
+		a, a_ = A
+		b, b_ = B
+		c, c_ = C
+		self.assertEqual(len(Assignment.empty), 0)
+		self.assertEqual(Assignment(a), Assignment([a]))
+		self.assertTrue(Assignment(b_).consistent_with(Assignment([a_, b_, c])))
+		self.assertFalse(Assignment(b_).consistent_with(Assignment([a_, b, c])))
+		self.assertTrue(Assignment([a, b_]).consistent_with(Assignment([a, b_, c_])))
+		self.assertFalse(Assignment([a, b_]).consistent_with(Assignment([a, b, c_])))
+		self.assertEqual(Assignment([a_, b, c_]).project([B, C]), Assignment([b, c_]))
+		self.assertEqual(Assignment([a, a_, b, c_]).project([A]), Assignment([a, a_]))
+		self.assertEqual(Assignment([a_, b, c_]).get_variable(B), b)
+		self.assertEqual(Assignment([a, b, c_]).get_variable(A), a)
+		self.assertSetEqual(Assignment([a, b_]).get_variables(), frozenset([A, B]))
+		self.assertSetEqual(Assignment([a_, b, c_]).get_variables(), frozenset([A, B, C]))
+		self.assertSequenceEqual(Assignment([a, b_, c_]).ordered([B, C, A]), [b_, c_, a])
+		self.assertSequenceEqual(Assignment([a, b_, c_]).ordered_values([B, C, A]), [False, False, True])
+		assignments = Assignment(a).complete([B, C])
+		self.assertIn(Assignment([a, b , c ]), assignments)
+		self.assertIn(Assignment([a, b , c_]), assignments)
+		self.assertIn(Assignment([a, b_, c ]), assignments)
+		self.assertIn(Assignment([a, b_, c_]), assignments)
+		self.assertNotIn(Assignment([a_, b , c ]), assignments)
+		self.assertNotIn(Assignment([a_, b , c_]), assignments)
+		self.assertNotIn(Assignment([a_, b_, c ]), assignments)
+		self.assertNotIn(Assignment([a_, b_, c_]), assignments)
+		assignments = Assignment.generate([A, B, C])
+		self.assertIn(Assignment([a , b , c ]), assignments)
+		self.assertIn(Assignment([a , b , c_]), assignments)
+		self.assertIn(Assignment([a , b_, c ]), assignments)
+		self.assertIn(Assignment([a , b_, c_]), assignments)
+		self.assertIn(Assignment([a_, b , c ]), assignments)
+		self.assertIn(Assignment([a_, b , c_]), assignments)
+		self.assertIn(Assignment([a_, b_, c ]), assignments)
+		self.assertIn(Assignment([a_, b_, c_]), assignments)
 
 class TestTables(unittest.TestCase):
-	def test_joint_table(self):
+	def test_marginal_table(self):
 		A, B = map(Variable, 'AB')
-		a, a_ = A.get_assignments()
-		b, b_ = B.get_assignments()
-		P = JointTable([A, B])
-		self.assertTrue(not P.is_valid)
+		a, a_ = A
+		b, b_ = B
+		P = MarginalTable([A, B])
+		self.assertFalse(P.is_valid)
 		P[a , b ] = 0.3
 		P[a , b_] = 0.2
 		P[a_, b ] = 0.4
 		P[a_, b_] = 0.09
-		self.assertTrue(not P.is_valid)
+		self.assertFalse(P.is_valid)
 		self.assertAlmostEqual(P.total_probability(), 0.99)
 		with self.assertRaises(AssertionError):
 			P.marginalize_over([A])
@@ -130,17 +160,31 @@ class TestTables(unittest.TestCase):
 		P.randomize()
 		self.assertTrue(P.is_valid)
 		P[a_, b_] += 0.1
-		self.assertTrue(not P.is_valid)
+		self.assertFalse(P.is_valid)
 		P.normalize()
 		self.assertTrue(P.is_valid)
-	def test_joint_table_learning_from_complete_data(self):
+	def test_marginal_table_multiplication(self):
+		C = Variable('C', ['Heads', 'Tails'], description='Coin')
+		D = Variable('D', [1, 2, 3, 4, 5, 6], description='Die')
+		h, t = C
+		d1, d2, d3, d4, d5, d6 = D
+		Pc = MarginalTable([C])
+		Pc[h] = Pc[t] = 0.5
+		Pd = MarginalTable([D])
+		Pd[d1] = Pd[d2] = Pd[d3] = Pd[d4] = Pd[d5] = Pd[d6] = 1.0/6.0
+		with self.assertRaises(ValueError):
+			Pc * Pc
+		P = Pc * Pd
+		for assignment in Assignment.generate([C, D]):
+			self.assertAlmostEqual(P[assignment], 1.0/12.0)
+	def test_marginal_table_learning_from_complete_data(self):
 		'''
 		See Figure 17.2 in Modeling and Reasoning with Bayesian Networks (Darwiche).
 		'''
 		S, H, E = map(Variable, 'SHE')
-		h, h_ = H.get_assignments()
-		s, s_ = S.get_assignments()
-		e, e_ = E.get_assignments()
+		h, h_ = H
+		s, s_ = S
+		e, e_ = E
 		header=[H, S, E]
 		data = [
 			[True, False, True],
@@ -159,8 +203,8 @@ class TestTables(unittest.TestCase):
 			[True, True, True],
 			[True, False, True],
 			[True, False, True]]
-		P = JointTable([S, H, E])
-		self.assertTrue(not P.is_valid)
+		P = MarginalTable([S, H, E])
+		self.assertFalse(P.is_valid)
 		P.learn_from_complete_data(header, data)
 		self.assertEqual(P(h , s , e ), 2.0/16.0)
 		self.assertEqual(P(h , s , e_), 0.0/16.0)
@@ -171,7 +215,67 @@ class TestTables(unittest.TestCase):
 		self.assertEqual(P(h_, s_, e ), 2.0/16.0)
 		self.assertEqual(P(h_, s_, e_), 1.0/16.0)
 	def test_conditional_table(self):
-		pass
+		A, B, C = map(Variable, 'ABC')
+		a, a_ = A
+		b, b_ = B
+		c, c_ = C
+		P = ConditionalTable([C], [A, B])
+		P[a , b , c ] = 1
+		P[a , b , c_] = 0
+		P[a , b_, c ] = 0
+		P[a , b_, c_] = 1
+		P[a_, b , c ] = 0
+		P[a_, b , c_] = 1
+		P[a_, b_, c ] = 0
+		P[a_, b_, c_] = 0.9
+		self.assertFalse(P.is_valid)
+		P[a_, b_, c_] = 1
+		self.assertTrue(P.is_valid)
+	def test_conditional_table_multiplication(self):
+		A, B, C = map(Variable, 'ABC')
+		a, a_ = A
+		b, b_ = B
+		c, c_ = C
+		Pc = ConditionalTable([C], [A, B])
+		Pc[a , b , c ] = 0.2
+		Pc[a , b , c_] = 0.8
+		Pc[a , b_, c ] = 0.3
+		Pc[a , b_, c_] = 0.7
+		Pc[a_, b , c ] = 0.4
+		Pc[a_, b , c_] = 0.6
+		Pc[a_, b_, c ] = 0.5
+		Pc[a_, b_, c_] = 0.5
+		Pj = MarginalTable([A, B])
+		Pj[a , b ] = 0.1
+		Pj[a , b_] = 0.2
+		Pj[a_, b ] = 0.3
+		Pj[a_, b_] = 0.4
+		P = Pc * Pj
+		self.assertTrue(isinstance(P, MarginalTable))
+		self.assertAlmostEqual(P[a , b , c ], Pc[a , b , c ] * Pj[a , b ])
+		self.assertAlmostEqual(P[a , b , c_], Pc[a , b , c_] * Pj[a , b ])
+		self.assertAlmostEqual(P[a , b_, c ], Pc[a , b_, c ] * Pj[a , b_])
+		self.assertAlmostEqual(P[a , b_, c_], Pc[a , b_, c_] * Pj[a , b_])
+		self.assertAlmostEqual(P[a_, b , c ], Pc[a_, b , c ] * Pj[a_, b ])
+		self.assertAlmostEqual(P[a_, b , c_], Pc[a_, b , c_] * Pj[a_, b ])
+		self.assertAlmostEqual(P[a_, b_, c ], Pc[a_, b_, c ] * Pj[a_, b_])
+		self.assertAlmostEqual(P[a_, b_, c_], Pc[a_, b_, c_] * Pj[a_, b_])
+		P = P(C)
+		self.assertAlmostEqual(P[c], Pc[a, b, c]*Pj[a, b] + Pc[a, b_, c]*Pj[a, b_] + Pc[a_, b, c]*Pj[a_, b] + Pc[a_, b_, c]*Pj[a_, b_])
+		self.assertAlmostEqual(P[c_], Pc[a, b, c_]*Pj[a, b] + Pc[a, b_, c_]*Pj[a, b_] + Pc[a_, b, c_]*Pj[a_, b] + Pc[a_, b_, c_]*Pj[a_, b_])
+		Pj = MarginalTable([A])
+		Pj[a ] = 0.4
+		Pj[a_] = 0.6
+		P = Pc * Pj
+		self.assertTrue(isinstance(P, ConditionalTable))
+		self.assertAlmostEqual(P[a , b , c ], Pc[a , b , c ] * Pj[a ])
+		self.assertAlmostEqual(P[a , b , c_], Pc[a , b , c_] * Pj[a ])
+		self.assertAlmostEqual(P[a , b_, c ], Pc[a , b_, c ] * Pj[a ])
+		self.assertAlmostEqual(P[a , b_, c_], Pc[a , b_, c_] * Pj[a ])
+		self.assertAlmostEqual(P[a_, b , c ], Pc[a_, b , c ] * Pj[a_])
+		self.assertAlmostEqual(P[a_, b , c_], Pc[a_, b , c_] * Pj[a_])
+		self.assertAlmostEqual(P[a_, b_, c ], Pc[a_, b_, c ] * Pj[a_])
+		self.assertAlmostEqual(P[a_, b_, c_], Pc[a_, b_, c_] * Pj[a_])
 
 class TestGraph(unittest.TestCase):
 	def test_dag(self):
@@ -182,6 +286,9 @@ class TestBayesianNetwork(unittest.TestCase):
 	def test_basics(self):
 		pass
 		# TODO: Implement test cases.
+	def test_deterministic_network(self):
+		pass
+		# TODO: Implement test cases.
 
 class TestInformationTheory(unittest.TestCase):
 	def test_entropy(self):
@@ -189,77 +296,12 @@ class TestInformationTheory(unittest.TestCase):
 		# TODO: Implement test cases.
 
 if __name__ == '__main__':
+	test_loader = unittest.TestLoader()
+	test_loader.loadTestsFromTestCase(TestBasics).debug()
+	test_loader.loadTestsFromTestCase(TestTables).debug()
+	test_loader.loadTestsFromTestCase(TestGraph).debug()
+	test_loader.loadTestsFromTestCase(TestBayesianNetwork).debug()
+	test_loader.loadTestsFromTestCase(TestInformationTheory).debug()
 	unittest.main()
-	print('')
-	print(Assignment([s, h, e_]))
-	print(Assignment([s, h, e_]).project([S, H]))
-	print(Assignment([s, h, e_]).project([E]))
-	print(P.assignments)
-	print(len(P.assignments))
-	print(P.validate())
-	print([P.probabilities[assignment] for assignment in P.assignments])
-	print(P)
-	print('')
-	print(P.marginalize_out([S]))
-	print('')
-	print(P.marginalize_out([H]))
-	print('')
-	print(P.marginalize_out([E]))
-	print('')
-	print(P.marginalize_out([E,S]))
-	print('')
-	print(P.marginalize_over([E,S]))
-	print('')
-	print(sum([Assignment([S<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
-	print(sum([Assignment([S<<True, H<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
-	print(sum([Assignment([H<<True]).consistent_with(Assignment([SingleAssignment(variable, value) for variable, value in zip(header, sample)])) for sample in data]))
-	print('')
-	P_H = ConditionalTable([S], [H])
-	print(P_H)
-	print(P_H.is_valid)
-	print('')
-	print(P.condition_on([H]))
-	print(P.condition_on([H]).is_valid)
-	print('')
-	print(P.condition([S], [H]))
-	print(P.condition([S], [H]).is_valid)
-	print('')
-	#P = JointTable([S, H, E])
-	#P.randomize()
-	print(P(e))
-	print(P(H,S|e))
-	print(P(h,s|e))
-	print(P(H|e))
-	print(P(h|e))
 
-	network = BayesianNetwork([S, H, E], [S < H, H > E])
-	network.learn_from_complete_data(header, data)
-	print('')
-	print(network.variables)
-	print(network.edges)
-	for variable in network.variables:
-		print(network.conditionals[variable])
-	P_b = network.as_joint_table()
-	print(P_b)
-	print(P)
-	print(P.get_samples())
-	print(P.get_samples(100))
-	print(P.get_samples(100, [S,H,E]))
-	print(network.simulate())
-	print(JointTable([S,H,E]).learn_from_complete_data(*P.get_samples(1000)))
-	print(JointTable([S,H,E]).learn_from_complete_data(*P.get_samples(1000, [S,H,E])))
-	A,B,C,D,E,F,G,H = map(Variable, 'ABCDEFGH')
-	nb = BayesianNetwork([A,B,C,D,E,F,G,H], [A>B,B>C,C>D,D>E,E>F,F>G,G>H])
-	print(nb)
-	print(nb.topological_order)
-	nb = BayesianNetwork([A,B,C,D], [A>C,B>C,A>B,D>B]).randomize()
-	Pb = nb.as_joint_table()
-	print(nb)
-	print(Pb)
-	print(Pb.is_valid)
-	print(Pb(A))
-	print(Pb(F))
-	print(Pb(A,F))
-	print(nb.topological_order)
-	print(nb.simulate())
 

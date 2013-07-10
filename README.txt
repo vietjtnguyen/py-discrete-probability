@@ -42,33 +42,33 @@ I doubt I'll ever get to all of this but here's a list of things that can be
 done. Most of it is based off of "Modeling and Reasoning with Bayesian
 Networks" by Adnan Darwiche.
 
-* Reorganizing class hierarchy so that a ``MarginalTable`` is derived from ``ConditionalTable``
-* Multiplying together ``MarginalTable``s and ``ConditionalTable``s
-* Expanded unit tests
-* Expectation maximization learning for ``MarginalTable``
-* Expectation maximization learning for ``BayesianNetwork``
-* Function-call interface for querying ``BayesianNetwork``s
-  * Start off accepting only full marginal queries, other queries can be answered by converting to ``MarginalTable``
-  * Later inference methods: variable elimination, factor elimination (jointree), network polynomial, belief propagation, model counting
-* Approximate inference for ``BayesianNetwork``s using stochastic sampling techniques
-  * Direct sampling
-  * Importance sampling
-  * Particle filtering
-  * Markov chain Monte Carlo
-  * Gibbs sampling
-* Approximate inference for ``BayesianNetwork``s using belief propagation
-* Algorithms for detecting d-separation and answer conditional independence queries
-  * Maybe automated reasoning to see if a conditional independence is implied by a starting set of conditional independencies and the graphoid axioms
-* Maximum a posterior (MAP) queries
-* Most probable explanation (MPE) queries
-* Methods for performing do-interventions
-* Bayesian learning for ``BayesianNetwork`` using meta-networks and Dirichlet priors for continuous parameter sets
-* Network structure learning for ``BayesianNetwork`` using max-likelihood approach and various regularization techniques (AIC, BIC/MDL).
-* Network structure learning for ``BayesianNetwork`` using greedy local search
-* Network structure learning for ``BayesianNetwork`` using constraint based approach (e.g. IC, IC*, PC, etc.)
-* Network structure learning for ``BayesianNetwork`` using Bayesian approach and Bayesian Dirichlet (BD) score
-* Test on http://www.cs.huji.ac.il/~galel/Repository/ and/or http://www.norsys.com/netlibrary/index.htm
-* Look into building on top of http://www.pytables.org/moin
-* Comment code
-* Produce documentation using Sphinx
+- Reorganizing class hierarchy so that a ``MarginalTable`` is derived from ``ConditionalTable``
+- Multiplying together ``MarginalTable`` and ``ConditionalTable``
+- Expanded unit tests
+- Expectation maximization learning for ``MarginalTable``
+- Expectation maximization learning for ``BayesianNetwork``
+- Function-call interface for querying ``BayesianNetwork``
+  - Start off accepting only full marginal queries, other queries can be answered by converting to ``MarginalTable``
+  - Later inference methods: variable elimination, factor elimination (jointree), network polynomial, belief propagation, model counting
+- Approximate inference for ``BayesianNetwork`` using stochastic sampling techniques
+  - Direct sampling
+  - Importance sampling
+  - Particle filtering
+  - Markov chain Monte Carlo
+  - Gibbs sampling
+- Approximate inference for ``BayesianNetwork`` using belief propagation
+- Algorithms for detecting d-separation and answer conditional independence queries
+  - Maybe automated reasoning to see if a conditional independence is implied by a starting set of conditional independencies and the graphoid axioms
+- Maximum a posterior (MAP) queries
+- Most probable explanation (MPE) queries
+- Methods for performing do-interventions
+- Bayesian learning for ``BayesianNetwork`` using meta-networks and Dirichlet priors for continuous parameter sets
+- Network structure learning for ``BayesianNetwork`` using max-likelihood approach and various regularization techniques (AIC, BIC/MDL).
+- Network structure learning for ``BayesianNetwork`` using greedy local search
+- Network structure learning for ``BayesianNetwork`` using constraint based approach (e.g. IC, IC-, PC, etc.)
+- Network structure learning for ``BayesianNetwork`` using Bayesian approach and Bayesian Dirichlet (BD) score
+- Test on http://www.cs.huji.ac.il/~galel/Repository/ and/or http://www.norsys.com/netlibrary/index.htm
+- Look into building on top of http://www.pytables.org/moin
+- Comment code
+- Produce documentation using Sphinx
 

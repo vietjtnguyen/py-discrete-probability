@@ -1,4 +1,4 @@
-__version__ = '0.9dev'
+__version__ = '0.9.1dev'
 
 from collections import namedtuple
 from math import log

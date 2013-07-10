@@ -26,17 +26,23 @@ A simple example can be found at http://nbviewer.ipython.org/5883568.
 References
 ----------
 
-I am current using `Adnan Darwiche's "Modeling and Reasoning with Bayesian Networks" <http://www.amazon.com/Modeling-Reasoning-Bayesian-Networks-Darwiche/dp/0521884381/ref=sr_1_1>`_ as reference. It is an excellent text.
+I am current using `Adnan Darwiche's "Modeling and Reasoning with Bayesian
+Networks" <http://www.amazon.com/Modeling-Reasoning-Bayesian-Networks-Darwiche/dp/0521884381/ref=sr_1_1>`_
+as reference. It is an excellent text.
 
-For an actual production/scientific level implementation look at `SamIam <http://reasoning.cs.ucla.edu/samiam>`_ from `Adnan Darwiche's Automated Reasoning <http://reasoning.cs.ucla.edu/>`_ group. I am not affiliated with this group.
+For an actual production/scientific level implementation look at `SamIam
+<http://reasoning.cs.ucla.edu/samiam>`_ from `Adnan Darwiche's Automated
+Reasoning <http://reasoning.cs.ucla.edu/>`_ group. I am not affiliated with
+this group.
 
 TODO
 ----
 
-I doubt I'll ever get to all of this but here's a list of things that can be done. Most of it is based off of "Modeling and Reasoning with Bayesian Networks" by Adnan Darwiche.
+I doubt I'll ever get to all of this but here's a list of things that can be
+done. Most of it is based off of "Modeling and Reasoning with Bayesian
+Networks" by Adnan Darwiche.
 
 * Reorganizing class hierarchy so that a ``MarginalTable`` is derived from ``ConditionalTable``
-* Multiplying together ``MarginalTable``s
 * Multiplying together ``MarginalTable``s and ``ConditionalTable``s
 * Expanded unit tests
 * Expectation maximization learning for ``MarginalTable``
@@ -62,6 +68,7 @@ I doubt I'll ever get to all of this but here's a list of things that can be don
 * Network structure learning for ``BayesianNetwork`` using constraint based approach (e.g. IC, IC*, PC, etc.)
 * Network structure learning for ``BayesianNetwork`` using Bayesian approach and Bayesian Dirichlet (BD) score
 * Test on http://www.cs.huji.ac.il/~galel/Repository/ and/or http://www.norsys.com/netlibrary/index.htm
+* Look into building on top of http://www.pytables.org/moin
 * Comment code
 * Produce documentation using Sphinx
 

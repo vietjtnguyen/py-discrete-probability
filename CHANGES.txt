@@ -1,3 +1,12 @@
+v0.9dev
+- Added tests for MarginalTable's learn_with_expectation_maximization
+- Added learn_with_expectation_maximization to MarginalTable
+- Added data_likelihood and data_log_likelihood methods to MarginalTable
+- Added data_to_assignments helper function to convert header and data samples to assignments, updated data using methods (e.g. learn_from_complete_data) to take in assignments instead of a header and data directly
+- Added complete_partials to Assignment which will return the completion of an Assignment to a set of Variables but only including the Variables that were not in the Assignment originally (instead of the Assignment across all variables as returned by complete)
+- Preliminary creation of Query class, replaces parse_query with Query.from_natural, MarginalTable's query method now takes in a Query object while MarginalTable's call method converts the arguments into a Query object and calls query
+- Converted tabs to four spaces (I'm taking the plunge)
+
 v0.8dev, 2013-07-07
 - Removed Variable.get_assignments() and instead made Variable emulate sequence types for tuple unpacking
 - Completed Assignment tests

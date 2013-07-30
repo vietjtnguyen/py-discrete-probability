@@ -23,6 +23,9 @@ Examples
 
 A simple example can be found at http://nbviewer.ipython.org/5883568.
 
+A simple example showing interop with `SymPy <http://sympy.org/>`_ can be found
+at http://nbviewer.ipython.org/6111576.
+
 References
 ----------
 
@@ -42,13 +45,11 @@ I doubt I'll ever get to all of this but here's a list of things that can be
 done. Most of it is based off of "Modeling and Reasoning with Bayesian
 Networks" by Adnan Darwiche.
 
-- Reorganizing class hierarchy so that a ``MarginalTable`` is derived from ``ConditionalTable``
-- Multiplying together ``MarginalTable`` and ``ConditionalTable``
+- Chain rule for conditional ``Tables``
 - Expanded unit tests
-- Expectation maximization learning for ``MarginalTable``
 - Expectation maximization learning for ``BayesianNetwork``
 - Function-call interface for querying ``BayesianNetwork``
-  - Start off accepting only full marginal queries, other queries can be answered by converting to ``MarginalTable``
+  - Start off accepting only full marginal queries, other queries can be answered by converting to ``Table``
   - Later inference methods: variable elimination, factor elimination (jointree), network polynomial, belief propagation, model counting
 - Approximate inference for ``BayesianNetwork`` using stochastic sampling techniques
   - Direct sampling

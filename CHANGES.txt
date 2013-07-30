@@ -1,3 +1,10 @@
+v0.10dev
+- Refactor MarginalTable and ConditionalTable into just Table
+- Updated basic IPython notebook accordingly
+- Added appropriate blocks on Table methods to execute on if the appropriate table type (most methods only work for marginal tables)
+- Added number system support that allows user to specify whether they want to use float, Decimal, SymPy integer, or SymPy float
+- Added a simple SymPy IPython notebook
+
 v0.9dev
 - Added tests for MarginalTable's learn_with_expectation_maximization
 - Added learn_with_expectation_maximization to MarginalTable

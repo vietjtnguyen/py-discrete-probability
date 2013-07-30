@@ -1,0 +1,4 @@
+- Encapsulate number system in a class
+- Use number system to use appropriate log function for information theory methods
+- Chain rule
+
